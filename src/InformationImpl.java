@@ -1,4 +1,4 @@
-package Serveur;
+package src;
 
 /* Cette classe correspond à l'objet distant. Elle doit 
 donc implémenter l'interface définie et contenir le code nécessaire. */

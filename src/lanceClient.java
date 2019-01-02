@@ -1,4 +1,4 @@
-package Client;
+package src;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -6,8 +6,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import serveur.Information;
 
-public class LanceClient {
+public class lanceClient {
 
   public static void main(String[] args) {
     System.out.println("Lancement du client");
