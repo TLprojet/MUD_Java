@@ -2,13 +2,11 @@ package server;
 
 import java.io.Serializable;
 
-public abstract class Cote implements Serializable {
+public abstract class Bord implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected int atteignable;
+	protected int franchissable;
 	protected char direction;
+	
 }

@@ -7,13 +7,13 @@ public class Piece implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private final int idPiece;
-	private Cote nord;
-	private Cote sud;
-	private Cote ouest;
-	private Cote est;
+	private Bord nord;
+	private Bord sud;
+	private Bord ouest;
+	private Bord est;
 
 	
-	public Piece(int idPiece, Cote nord, Cote sud, Cote ouest, Cote est) {
+	public Piece(int idPiece, Bord nord, Bord sud, Bord ouest, Bord est) {
 		super();
 		this.idPiece = idPiece;
 		this.nord = nord;
@@ -22,35 +22,35 @@ public class Piece implements Serializable {
 		this.est = est;
 	}
 
-	public Cote getNord() {
+	public Bord getNord() {
 		return nord;
 	}
 
-	public void setNord(Cote nord) {
+	public void setNord(Bord nord) {
 		this.nord = nord;
 	}
 
-	public Cote getSud() {
+	public Bord getSud() {
 		return sud;
 	}
 
-	public void setSud(Cote sud) {
+	public void setSud(Bord sud) {
 		this.sud = sud;
 	}
 
-	public Cote getOuest() {
+	public Bord getOuest() {
 		return ouest;
 	}
 
-	public void setOuest(Cote ouest) {
+	public void setOuest(Bord ouest) {
 		this.ouest = ouest;
 	}
 
-	public Cote getEst() {
+	public Bord getEst() {
 		return est;
 	}
 
-	public void setEst(Cote est) {
+	public void setEst(Bord est) {
 		this.est = est;
 	}
 
