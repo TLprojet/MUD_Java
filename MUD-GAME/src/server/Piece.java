@@ -11,7 +11,6 @@ public class Piece implements Serializable {
 	private Cote sud;
 	private Cote ouest;
 	private Cote est;
-	private Cote eest;
 
 	
 	public Piece(int idPiece, Cote nord, Cote sud, Cote ouest, Cote est) {
