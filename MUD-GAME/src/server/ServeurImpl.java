@@ -33,9 +33,7 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 	}
 
 	@Override
-	public String afficherGrille() throws RemoteException {
-		System.out.println("Affichage de la grille");
-		GrilleDonjon g = new GrilleDonjon();
-		return g.afficherLabyrinthe();
+	public void afficherGrille() throws RemoteException {
+		
 	}
 }

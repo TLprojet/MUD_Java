@@ -6,7 +6,7 @@ public class GrilleDonjon implements Serializable {
 		
 	private static final long serialVersionUID = 1L;
 	
-		private Piece grille[][];
+		public Piece grille[][];
 		
 		//Création d'une grille (donjon) de 9 pièces où se trouveront dans chacune un monstre ou groupe de monstres
 		//à affronter pour passer à la pièce suivante.
@@ -40,19 +40,8 @@ public class GrilleDonjon implements Serializable {
 			}
 		}
 		
-		public String afficherLabyrinthe() {	
+		public void afficherLabyrinthe() {	
 			
-			return(""
-					+ " _______ _______ _______ \r\n" + 
-					"|       |       |       |\r\n" + 
-					"|       |       |       |\r\n" + 
-					"|_______|_______|_______| \r\n" + 
-					"|       |       |       |\r\n" + 
-					"|       |       |       |\r\n" + 
-					"|_______|_______|_______| \r\n" + 
-					"|       |       |       |\r\n" + 
-					"|       |       |       |\r\n" + 
-					"|_______|_______|_______|");
 		}
 
 }

@@ -31,7 +31,6 @@ public class lanceClient {
     }
     
     System.out.println("Ravi de vous rencontrer, " + nomJoueur + ", c'est parti !");
-    serveur.afficherGrille();
     
     System.out.println("Fermeture du jeu");
   }
