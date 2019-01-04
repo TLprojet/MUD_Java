@@ -8,7 +8,4 @@ public class Mur extends Bord {
 		franchissable=0;
 	}
 	
-	public String toString() {
-		return "*";
-	}
 }

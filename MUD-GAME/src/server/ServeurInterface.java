@@ -12,10 +12,12 @@ Ainsi chaque méthode appelée à distance doit déclarer qu'elle
 est en mesure de lever l'exception java.rmi.RemoteException. */
 
 
-public interface Information extends Remote {
+public interface ServeurInterface extends Remote {
 
 	// méthodes susceptibles d'être appelées à distante
 
    public String getInformation() throws RemoteException;
+   
+   public String afficherGrille() throws RemoteException;
 
 }

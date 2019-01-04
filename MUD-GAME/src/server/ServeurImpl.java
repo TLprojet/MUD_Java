@@ -16,19 +16,26 @@ pour un objet distant dont l'appel par le stub du client est unique. */
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 
-public class InformationImpl extends UnicastRemoteObject implements Information {
+public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface {
 
  	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected InformationImpl() throws RemoteException {
+	protected ServeurImpl() throws RemoteException {
     	super();
 	}
 
 	public String getInformation() throws RemoteException {
     	System.out.println("Invocation de la méthode getInformation()");
    		return "from Server : bonjour";
+	}
+
+	@Override
+	public String afficherGrille() throws RemoteException {
+		System.out.println("Affichage de la grille");
+		GrilleDonjon g = new GrilleDonjon();
+		return g.afficherLabyrinthe();
 	}
 }
