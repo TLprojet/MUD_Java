@@ -7,7 +7,8 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import server.*;
+import server.ChatServerIF;
+import server.ServeurInterface;
 
 public class lanceClient {
 
@@ -30,8 +31,13 @@ public class lanceClient {
       System.err.println(e.getMessage());
     }
     
-    System.out.println("Ravi de vous rencontrer, " + nomJoueur + ", c'est parti !");
-    
+    System.out.println("Ravi de vous rencontrer \"" + nomJoueur + "\", c'est parti !");
+
+   
+	String chatServerURL = "rmi://localhost:1099/RMIChatServer";
+	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
+	new Thread(new ChatClient(nomJoueur,chatServer)).start();
+
     System.out.println("Fermeture du jeu");
   }
 }

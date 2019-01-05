@@ -34,6 +34,6 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 
 	@Override
 	public void afficherGrille() throws RemoteException {
-		
+		System.out.println("coucou");
 	}
 }
