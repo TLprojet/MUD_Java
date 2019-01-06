@@ -17,6 +17,10 @@ public class ChatServer extends UnicastRemoteObject implements ChatServerIF {
 	public synchronized void registerChatClient(ChatClientIF chatClient) throws RemoteException {
 		this.chatClients.add(chatClient);
 	}
+	
+	public synchronized void delClientFromChat(ChatClientIF chatClient) throws RemoteException {
+		this.chatClients.remove(chatClient);
+	}
 
 	
 	public synchronized void broadcastMessage(String message) throws RemoteException {

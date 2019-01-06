@@ -32,7 +32,7 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 		String message="";
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out.println("Vous pouvez maintenant discuter");
+		System.out.println("Vous pouvez maintenant discuter avec les membres de la pièce <numPièce>");
 	    while (true) {
 	      try {
 			message = in.readLine();

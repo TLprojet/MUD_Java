@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 
 public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface {
 
+	private GrilleDonjon dj;
  	/**
 	 * 
 	 */
@@ -33,7 +34,7 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 	}
 
 	@Override
-	public void afficherGrille() throws RemoteException {
-		System.out.println("coucou");
+	public String afficherGrille() throws RemoteException {
+		return dj.afficherLabyrinthe();
 	}
 }

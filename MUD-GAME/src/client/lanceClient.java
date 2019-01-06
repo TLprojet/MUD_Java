@@ -19,6 +19,8 @@ public class lanceClient {
     
   public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
     System.out.println("Lancement du jeu");
+    
+    //Connexion au serveur de jeu
     serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/TestRMI");
     
     System.out.println("Bienvenue !");
@@ -33,10 +35,15 @@ public class lanceClient {
     
     System.out.println("Ravi de vous rencontrer \"" + nomJoueur + "\", c'est parti !");
 
-   
+    /* Lancement du chat
+     * 
 	String chatServerURL = "rmi://localhost:1099/RMIChatServer";
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	new Thread(new ChatClient(nomJoueur,chatServer)).start();
+	 *
+	*/
+    
+	System.out.println(serveur.afficherGrille());
 
     System.out.println("Fermeture du jeu");
   }
