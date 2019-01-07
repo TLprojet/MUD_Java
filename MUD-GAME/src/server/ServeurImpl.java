@@ -42,8 +42,6 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 					
 					
 					
-					
-					
 				}
 			}
 		}
