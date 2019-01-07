@@ -20,13 +20,9 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 	}
 
 
-	
 	public void retrieveMessage(String message) throws RemoteException {
 		System.out.println(message);
 	}
-
-
-
 	
 	public void run() {
 		String message="";
