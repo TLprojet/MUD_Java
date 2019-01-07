@@ -27,24 +27,11 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
     	super();
 	}
 
-	public String getInformation() throws RemoteException {
-    	System.out.println("Invocation de la méthode getInformation()");
-   		return "from Server : bonjour";
+	@Override
+	public String afficherGrille() throws RemoteException {
+		GrilleDonjon dj= new GrilleDonjon();
+		return(dj.afficherGrille());
 	}
 
-	public String afficherGrille() throws RemoteException {
-		GrilleDonjon dj = new GrilleDonjon(5);
-		String c="";
-		for (int i=1;i<5;i++) {
-			for (int j=1; j<4; j++) {
-				if (i<4 || (i==4 && j==1)) {
-					//AFFICHAGE A FAIRE
-					
-					
-					
-				}
-			}
-		}
-		return c;
-	}
+	
 }

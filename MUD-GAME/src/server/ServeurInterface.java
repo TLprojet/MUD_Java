@@ -15,8 +15,6 @@ est en mesure de lever l'exception java.rmi.RemoteException. */
 public interface ServeurInterface extends Remote {
 
 	// méthodes susceptibles d'être appelées à distante
-
-   public String getInformation() throws RemoteException;
    
    public String afficherGrille() throws RemoteException;
 

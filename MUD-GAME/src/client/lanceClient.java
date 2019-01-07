@@ -43,8 +43,7 @@ public class lanceClient {
 	*/ 
 	
     
-	String c = serveur.afficherGrille();
-	System.out.println(c);
+	System.out.println(serveur.afficherGrille());
 
   }
 }
