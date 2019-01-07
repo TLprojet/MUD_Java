@@ -1,0 +1,15 @@
+Fonctionnalités
+------------------------------------------------------------------------------------------------------------------------
+1. Affichage du donjon (grille) pour l'utilisateur
+2. Associer une pièce à un péché, bonus ou salle vide de manière aléatoire à chaque création de partie
+3. Faire une classe ServeurGlobal qui va gérer tous les différents serveurs
+4. Dans le tchat, pour parler il faudra mettre " avant le message, sinon sera interprété comme une commande
+	--> Mise en place d'une gestion de commandes (pour le joueur)
+5. Gérer les positions (un joueur est à une certaine position à un certain moment)
+6. Déplacement dans la grille (O,S,E,N) selon les portes / murs (implique un changement de serveur de tchat pour le joueur..)
+7. Ouvrir AUTOMATIQUEMENT un chat seulement pour les joueurs dans la même pièce
+8. Un joueur dispose de points de vie et d'une position
+9. Création de monstres différents selon la pièce
+10. Gestion des combats (Tours, aider un autre joueur, affronter un autre joueur, etc) --> bien respecter la partie conception
+11. Labyrinthe multi serveur (par exemple une pièce = un serveur de jeu)
+12. Gérer la persistance
