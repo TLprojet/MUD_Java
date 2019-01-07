@@ -33,7 +33,7 @@ public class lanceClient {
       System.err.println(e.getMessage());
     }
     
-    System.out.println("Ravi de vous rencontrer yiueifhgy \"" + nomJoueur + "\", c'est parti !");
+    System.out.println("Ravi de vous rencontrer yiifhgy \"" + nomJoueur + "\", c'est parti !");
 
    
       
