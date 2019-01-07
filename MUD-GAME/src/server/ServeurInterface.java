@@ -18,6 +18,6 @@ public interface ServeurInterface extends Remote {
 
    public String getInformation() throws RemoteException;
    
-   public void afficherGrille() throws RemoteException;
+   public String afficherGrille() throws RemoteException;
 
 }

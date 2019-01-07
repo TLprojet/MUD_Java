@@ -10,7 +10,7 @@ public class Mur extends Bord {
 
 	@Override
 	public String toString() {
-		return "";
+		return "mur";
 	}
 	
 	

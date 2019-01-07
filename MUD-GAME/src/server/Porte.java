@@ -10,6 +10,6 @@ public class Porte extends Bord implements Serializable {
 	}
 
 	public String toString() {
-		return " ";
+		return "porte";
 	}
 }

@@ -36,15 +36,15 @@ public class lanceClient {
     System.out.println("Ravi de vous rencontrer \"" + nomJoueur + "\", c'est parti !");
 
    
-      
+     /* 
 	String chatServerURL = "rmi://localhost:1099/RMIChatServer";
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	new Thread(new ChatClient(nomJoueur,chatServer)).start();
-	 
+	*/ 
 	
     
-	//System.out.println(serveur.afficherGrille());
-
+	String c = serveur.afficherGrille();
+	System.out.println(c);
 
   }
 }
