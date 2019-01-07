@@ -39,14 +39,12 @@ public class GrilleDonjon implements Serializable {
 				
 		}
 		
-		public String afficherLabyrinthe() {
-			String chaineReturn="";
+		public void afficherLabyrinthe() {
 			for (int i =1; i<=4; i++) {
 				for (int j=1; j<=3; j++) {
-					chaineReturn+="Pièce n°" + grille[i][j].getIdPiece() + "\n";
+					System.out.println("Pièce n°" + grille[i][j].getIdPiece() + "\n");
 				}
 			}
-			return chaineReturn;
 		}
 
 }

@@ -34,7 +34,7 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 	}
 
 	@Override
-	public String afficherGrille() throws RemoteException {
-		return dj.afficherLabyrinthe();
+	public void afficherGrille() throws RemoteException {
+		dj.afficherLabyrinthe();
 	}
 }
