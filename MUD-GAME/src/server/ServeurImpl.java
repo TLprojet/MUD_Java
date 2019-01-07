@@ -18,9 +18,7 @@ import java.rmi.RemoteException;
 
 public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface {
 
- 	/**
-	 * 
-	 */
+ 	
 	private static final long serialVersionUID = 1L;
 
 	protected ServeurImpl() throws RemoteException {
