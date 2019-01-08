@@ -3,7 +3,7 @@ Fonctionnalités
 - OK 1. Affichage du donjon (grille) pour l'utilisateur
 - OK 2. Associer une pièce à un péché, bonus ou salle vide à chaque création de partie
 3. Faire une classe ServeurGlobal qui va gérer tous les différents serveurs
-4. Dans le tchat, pour parler il faudra mettre " avant le message, sinon sera interprété comme une commande
+- OK 4. Dans le tchat, pour parler il faudra mettre " avant le message, sinon sera interprété comme une commande
 	--> Mise en place d'une gestion de commandes (pour le joueur)
 5. Gérer les positions (un joueur est à une certaine position à un certain moment)
 6. Déplacement dans la grille (O,S,E,N) selon les portes / murs (implique un changement de serveur de tchat pour le joueur..)
