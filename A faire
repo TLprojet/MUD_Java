@@ -1,7 +1,7 @@
 Fonctionnalités
 ------------------------------------------------------------------------------------------------------------------------
 1. Affichage du donjon (grille) pour l'utilisateur
-2. Associer une pièce à un péché, bonus ou salle vide de manière aléatoire à chaque création de partie
+- OK 2. Associer une pièce à un péché, bonus ou salle vide à chaque création de partie
 3. Faire une classe ServeurGlobal qui va gérer tous les différents serveurs
 4. Dans le tchat, pour parler il faudra mettre " avant le message, sinon sera interprété comme une commande
 	--> Mise en place d'une gestion de commandes (pour le joueur)
