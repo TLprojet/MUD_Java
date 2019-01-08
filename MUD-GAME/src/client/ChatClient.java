@@ -37,10 +37,18 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 			e1.printStackTrace();
 		}
 	      try {
-	    	  chatServer.broadcastMessage(name + ": " + message);
+	    	  if(message.startsWith("\"")){
+	    		  chatServer.broadcastMessage(name + ": " + message.substring(1,message.length()));
+	    	  }
+	    	  else if(message.equals("quit")){
+	    		  chatServer.delClientFromChat(this);
+	    		  break;
+	    	  }
 	      } catch (RemoteException e) {
 	    	  e.printStackTrace();
-	      }
+	      } catch (IOException e) {
+			e.printStackTrace();
+		}
 	    }
 		
 	}
