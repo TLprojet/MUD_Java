@@ -25,7 +25,7 @@ public class lanceClient {
     serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/InitialServ");
     
     System.out.println("Bienvenue !");
-    System.out.println("Quel est votre pseudo?");
+    System.out.println("Quel est votre pseudo ?");
     try {
       System.out.print(">> ");
       nomJoueur = in.readLine();
