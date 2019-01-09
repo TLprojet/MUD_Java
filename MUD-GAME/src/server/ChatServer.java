@@ -8,9 +8,21 @@ import client.ChatClientIF;
 public class ChatServer extends UnicastRemoteObject implements ChatServerIF {
 	private static final long serialVersionUID = -189170250683093063L;
 	private ArrayList<ChatClientIF> chatClients;
+	private String nomServeur;
 	
-	protected ChatServer() throws RemoteException {
+	protected ChatServer(String nomServeur) throws RemoteException {
 		chatClients = new ArrayList<ChatClientIF>();
+		this.nomServeur = nomServeur;
+	}
+
+
+	public String getNomServeur() {
+		return nomServeur;
+	}
+
+
+	public void setNomServeur(String nomServeur) {
+		this.nomServeur = nomServeur;
 	}
 
 

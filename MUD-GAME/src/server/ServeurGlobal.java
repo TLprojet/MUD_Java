@@ -19,7 +19,8 @@ public class ServeurGlobal {
 		ServeurGlobal globalServ = new ServeurGlobal(new ArrayList<ServeurInterface>(), new ArrayList<ChatServerIF>(), new ArrayList<Joueur>());
 		globalServ.addGameServer(new ServeurImpl("InitialServ"));
 		for(int i=0;i<10;i++){
-			addChatServer(Integer.toString(i+1), new ChatServer());
+			String num = Integer.toString(i+1);
+			globalServ.addChatServer(num, new ChatServer(num));
 		}
 
 	}
@@ -31,13 +32,13 @@ public class ServeurGlobal {
 		this.playersInGame = playersInGame;
 	}
 	
-	public static void addGameServer(ServeurImpl serv) throws RemoteException, MalformedURLException{
+	public void addGameServer(ServeurImpl serv) throws RemoteException, MalformedURLException{
 		gameServers.add(serv);
 		Naming.rebind(serv.getServerName(), serv);
 	   	System.out.println("Serveur de jeu lancé");
 	}
 	
-	public static void addChatServer(String nom, ChatServer serv) throws RemoteException, MalformedURLException{
+	public void addChatServer(String nom, ChatServer serv) throws RemoteException, MalformedURLException{
 		chatServers.add(serv);
 		Naming.rebind(nom, serv);
 		System.out.println("Serveur de chat de la pièce n°" + nom + " lancé");
