@@ -14,6 +14,7 @@ constructeur par défaut qui ne lève pas cette exception. */
 qui contient les différents traitements élémentaires
 pour un objet distant dont l'appel par le stub du client est unique. */
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.rmi.RemoteException;
 
 public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface {
@@ -21,9 +22,12 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
  	
 	private static final long serialVersionUID = 1L;
 	private String serverName;
-	protected ServeurImpl(String serverName) throws RemoteException {
+	private ArrayList<Joueur> playersInGame;
+	
+	protected ServeurImpl(String serverName, ArrayList<Joueur> playersInGame) throws RemoteException {
     	super();
     	this.serverName = serverName;
+		this.playersInGame = playersInGame;
 	}
 
 	public String getServerName() {
@@ -35,10 +39,20 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 	}
 
 	@Override
-	public String afficherGrille() throws RemoteException {
+	public String afficherGrille(int currentRoom) throws RemoteException {
 		GrilleDonjon dj= new GrilleDonjon();
-		return(dj.afficherGrille());
+		return(dj.afficherGrille(currentRoom));
 	}
-
 	
+	public ArrayList<Joueur> getPlayersInGame() {
+		return playersInGame;
+	}
+	
+	public void setPlayersInGame(ArrayList<Joueur> playersInGame) {
+		this.playersInGame = playersInGame;
+	}
+	
+	public void addPlayer(String nom){
+		playersInGame.add(new Joueur(playersInGame.size(), 8, nom));
+	}
 }

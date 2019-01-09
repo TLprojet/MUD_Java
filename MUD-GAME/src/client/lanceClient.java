@@ -34,17 +34,17 @@ public class lanceClient {
       System.err.println(e.getMessage());
     }
     
+    serveur.addPlayer(nomJoueur);
     System.out.println(nomJoueur + "\", c'est parti !");
 
    
-     /* 
-	String chatServerURL = "rmi://localhost:1099/RMIChatServer";
+
+	String chatServerURL = "rmi://localhost:1099/8";
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	new Thread(new ChatClient(nomJoueur,chatServer)).start();
-	*/ 
 	
     
-	System.out.println(serveur.afficherGrille());
+	System.out.println(serveur.afficherGrille(8));
 
   }
 }

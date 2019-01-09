@@ -41,16 +41,19 @@ public class GrilleDonjon implements Serializable {
 			}				
 		}
 		
-		public String afficherGrille() {
+		public String afficherGrille(int currentRoom) {
 			String chaine="|---------|---------|---------|\n";
 			for (int i=0;i<=2;i++) {
 				chaine+="|         |         |         |\n"
 					   +"|";
 				for (int j=0; j<=2; j++) {
-						//AFFICHAGE A FAIRE
-						//ceci n'est qu'un test pour tester les fonctions
-						//chaine+="Pièce n°"+this.grille[i][j].getIdPiece()+"\n";
-						chaine+="    "+ this.grille[i][j].getIdPiece() + "    |";
+						int p = this.grille[i][j].getIdPiece();
+						if(p != currentRoom){
+							chaine+="    "+ p + "    |";
+						}
+						else{
+							chaine+= "   >" + p + "<   |";
+						}
 				}
 				chaine+="\n"
 					   +"|         |         |         |\n"

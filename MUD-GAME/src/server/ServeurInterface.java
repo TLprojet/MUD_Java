@@ -16,7 +16,8 @@ public interface ServeurInterface extends Remote {
 
 	// méthodes susceptibles d'être appelées à distante
    
-   public String afficherGrille() throws RemoteException;
+   public String afficherGrille(int currentRoom) throws RemoteException;
    public String getServerName() throws RemoteException;
+   public void addPlayer(String nom) throws RemoteException;
 
 }

@@ -12,12 +12,11 @@ public class ServeurGlobal {
 	
 	private static ArrayList<ServeurInterface> gameServers;
 	private static ArrayList<ChatServerIF> chatServers;
-	private ArrayList<Joueur> playersInGame;
 	
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
 		LocateRegistry.createRegistry(1099);
 		ServeurGlobal globalServ = new ServeurGlobal(new ArrayList<ServeurInterface>(), new ArrayList<ChatServerIF>(), new ArrayList<Joueur>());
-		globalServ.addGameServer(new ServeurImpl("InitialServ"));
+		globalServ.addGameServer(new ServeurImpl("InitialServ", new ArrayList<Joueur>()));
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
@@ -29,7 +28,6 @@ public class ServeurGlobal {
 		super();
 		this.gameServers = gameServers;
 		this.chatServers = chatServers;
-		this.playersInGame = playersInGame;
 	}
 	
 	public void addGameServer(ServeurImpl serv) throws RemoteException, MalformedURLException{
@@ -58,14 +56,6 @@ public class ServeurGlobal {
 	
 	public void setChatServers(ArrayList<ChatServerIF> chatServers) {
 		this.chatServers = chatServers;
-	}
-	
-	public ArrayList<Joueur> getPlayersInGame() {
-		return playersInGame;
-	}
-	
-	public void setPlayersInGame(ArrayList<Joueur> playersInGame) {
-		this.playersInGame = playersInGame;
 	}
 	
 }
