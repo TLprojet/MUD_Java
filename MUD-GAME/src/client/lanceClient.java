@@ -22,7 +22,7 @@ public class lanceClient {
     System.out.println("Lancement du jeu");
     
     //Connexion au serveur de jeu
-    serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/" + ServeurGlobal.getGameServers().get(0).getServerName());
+    serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/InitialServ");
     
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo?");
