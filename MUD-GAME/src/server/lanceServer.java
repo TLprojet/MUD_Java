@@ -10,8 +10,8 @@ public class lanceServer {
   public static void main(String[] args) throws RemoteException, MalformedURLException {
  		  
 	  LocateRegistry.createRegistry(1099);
-	  ServeurImpl informationImpl = new ServeurImpl();
-	  Naming.rebind("TestRMI", informationImpl);
+	  ServeurImpl informationImpl = new ServeurImpl("gameServer");
+	  Naming.rebind(informationImpl.getServerName(), informationImpl);
    	  System.out.println("Serveur de jeu lancé");
    	  
   }

@@ -8,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import server.ChatServerIF;
+import server.ServeurGlobal;
 import server.ServeurInterface;
 
 public class lanceClient {
@@ -21,7 +22,7 @@ public class lanceClient {
     System.out.println("Lancement du jeu");
     
     //Connexion au serveur de jeu
-    serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/TestRMI");
+    serveur = (ServeurInterface) Naming.lookup("rmi://localhost:1099/" + ServeurGlobal.getGameServers().get(0).getServerName());
     
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo?");

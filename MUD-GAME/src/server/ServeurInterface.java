@@ -17,5 +17,6 @@ public interface ServeurInterface extends Remote {
 	// méthodes susceptibles d'être appelées à distante
    
    public String afficherGrille() throws RemoteException;
+   public String getServerName() throws RemoteException;
 
 }

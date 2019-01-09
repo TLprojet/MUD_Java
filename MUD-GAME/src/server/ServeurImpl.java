@@ -20,9 +20,18 @@ public class ServeurImpl extends UnicastRemoteObject implements ServeurInterface
 
  	
 	private static final long serialVersionUID = 1L;
-
-	protected ServeurImpl() throws RemoteException {
+	private String serverName;
+	protected ServeurImpl(String serverName) throws RemoteException {
     	super();
+    	this.serverName = serverName;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 
 	@Override

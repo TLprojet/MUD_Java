@@ -16,7 +16,7 @@ public class LanceChatClient {
 	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		String chatServerURL = "rmi://localhost:1099/RMIChatServer";
+		String chatServerURL = "rmi://localhost:1099/8";
 		ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 		
 		System.out.println("Quel est votre pseudo ?");
