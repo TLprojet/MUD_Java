@@ -2,10 +2,10 @@ package server;
 
 import java.io.Serializable;
 
-public class Porte extends Bord implements Serializable {
+public class Door extends Edge implements Serializable {
 
 	private static final long serialVersionUID = 3836007156848573600L;
-	public Porte() {
+	public Door() {
 		franchissable = 1;
 	}
 

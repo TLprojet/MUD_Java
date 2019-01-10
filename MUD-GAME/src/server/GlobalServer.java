@@ -6,17 +6,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 
-import client.ChatClientIF;
-
-public class ServeurGlobal {
+public class GlobalServer {
 	
-	private static ArrayList<ServeurInterface> gameServers;
+	private static ArrayList<GameServerIF> gameServers;
 	private static ArrayList<ChatServerIF> chatServers;
 	
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
 		LocateRegistry.createRegistry(1099);
-		ServeurGlobal globalServ = new ServeurGlobal(new ArrayList<ServeurInterface>(), new ArrayList<ChatServerIF>(), new ArrayList<Joueur>());
-		globalServ.addGameServer(new ServeurImpl("InitialServ", new ArrayList<Joueur>()));
+		GlobalServer globalServ = new GlobalServer(new ArrayList<GameServerIF>(), new ArrayList<ChatServerIF>());
+		globalServ.addGameServer(new GameServer("InitialServ", new ArrayList<Player>()));
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
@@ -24,13 +22,13 @@ public class ServeurGlobal {
 
 	}
 	
-	public ServeurGlobal(ArrayList<ServeurInterface> gameServers, ArrayList<ChatServerIF> chatServers, ArrayList<Joueur> playersInGame){
+	public GlobalServer(ArrayList<GameServerIF> gameServers, ArrayList<ChatServerIF> chatServers){
 		super();
 		this.gameServers = gameServers;
 		this.chatServers = chatServers;
 	}
 	
-	public void addGameServer(ServeurImpl serv) throws RemoteException, MalformedURLException{
+	public void addGameServer(GameServer serv) throws RemoteException, MalformedURLException{
 		gameServers.add(serv);
 		Naming.rebind(serv.getServerName(), serv);
 	   	System.out.println("Serveur de jeu lancé");
@@ -42,12 +40,12 @@ public class ServeurGlobal {
 		System.out.println("Serveur de chat de la pièce n°" + nom + " lancé");
 	}
 	
-	public static ArrayList<ServeurInterface> getGameServers() {
+	public static ArrayList<GameServerIF> getGameServers() {
 		return gameServers;
 	}
 	
-	public static void setGameServers(ArrayList<ServeurInterface> gameServers) {
-		ServeurGlobal.gameServers = gameServers;
+	public static void setGameServers(ArrayList<GameServerIF> gameServers) {
+		GlobalServer.gameServers = gameServers;
 	}
 	
 	public ArrayList<ChatServerIF> getChatServers() {

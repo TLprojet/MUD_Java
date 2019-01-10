@@ -1,10 +1,10 @@
 package server;
 
-public class Mur extends Bord {
+public class Wall extends Edge {
 	
 	private static final long serialVersionUID = -618262362219794394L;
 
-	public Mur () {
+	public Wall () {
 		franchissable=0;
 	}
 

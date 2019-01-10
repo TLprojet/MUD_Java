@@ -2,18 +2,18 @@ package server;
 
 import java.io.Serializable;
 
-public class Piece implements Serializable {
+public class Room implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private final int idPiece;
-	private Bord nord;
-	private Bord sud;
-	private Bord ouest;
-	private Bord est;
+	private Edge nord;
+	private Edge sud;
+	private Edge ouest;
+	private Edge est;
 
 	
-	public Piece(int idPiece, Bord nord, Bord sud, Bord ouest, Bord est) {
+	public Room(int idPiece, Edge nord, Edge sud, Edge ouest, Edge est) {
 		super();
 		this.idPiece = idPiece;
 		this.nord = nord;
@@ -22,35 +22,35 @@ public class Piece implements Serializable {
 		this.est = est;
 	}
 
-	public Bord getNord() {
+	public Edge getNord() {
 		return nord;
 	}
 
-	public void setNord(Bord nord) {
+	public void setNord(Edge nord) {
 		this.nord = nord;
 	}
 
-	public Bord getSud() {
+	public Edge getSud() {
 		return sud;
 	}
 
-	public void setSud(Bord sud) {
+	public void setSud(Edge sud) {
 		this.sud = sud;
 	}
 
-	public Bord getOuest() {
+	public Edge getOuest() {
 		return ouest;
 	}
 
-	public void setOuest(Bord ouest) {
+	public void setOuest(Edge ouest) {
 		this.ouest = ouest;
 	}
 
-	public Bord getEst() {
+	public Edge getEst() {
 		return est;
 	}
 
-	public void setEst(Bord est) {
+	public void setEst(Edge est) {
 		this.est = est;
 	}
 
