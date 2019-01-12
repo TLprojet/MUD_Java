@@ -74,33 +74,37 @@ public class RunClient {
 			chatClient.send(mes.substring(1,mes.length()));
 		}
 		else {
+			int move = 0;
 			switch(mes) {
 			case "quit":
 				server.logOut(playerNum);
 				chatServer.delClientFromChat(chatClient);
 				break;
-			case "Z":
-				res=server.move(playerNum, 'Z');
-				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
-				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");						
+			case "Z":				
 			case "z":
-				res=server.move(playerNum, 'z');
-				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
-				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
+				move = 1;
 				break;
-			case "Q": 
-				res=server.move(playerNum, 'Q');
-				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
-				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");					
+			case "Q": 				
 			case "q":
+				move = 2;
 				break;
 			case "S":
 			case "s":
+				move = 3;
 				break;
 			case "D":
 			case "d":
+				move = 4;
 				break;
 				
+			}
+			if(move !=0){
+				res = server.move(playerNum, move);
+				if (res!=-1){
+					player.setRoom(res);
+					System.out.println(server.displayGrid(player.getRoom()));
+				}
+				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
 			}
 		}
 	}

@@ -90,46 +90,42 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	//in : playerNum int, char dir (direction : ZQSD)
 	//out: 1 if everything worked fine
 	//     -1 can't go there (wall)
-	public int move(int playerNum, char dir) throws RemoteException {
+	public int move(int playerNum, int dir) throws RemoteException {
 		Player curPlayer = players.get(playerNum);
-		int newRoomNum;
+		int newRoomNum = -1;
 		
 		int pos = curPlayer.getRoom();
 		int x = ((pos-1)/3);
 		int y = ((pos-1)%3);
-		if (dir == 'Q' || dir =='q') { //players wants to go to the room in the left
+		if (dir == 2) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getOuest() instanceof Door) {
 				newRoomNum = 3*x+y;
 				curPlayer.setRoom(newRoomNum);
 			}
-			else return -1;
 		}
 		
-		if (dir == 'Z' || dir =='z') { //players wants to go to the room in the left
+		if (dir == 1) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getNord() instanceof Door) {
 				newRoomNum = 3*(x-1)+y+1;
 				curPlayer.setRoom(newRoomNum);
 			}
-			else return -1;
 		}
 		
-		if (dir == 'S' || dir =='s') { //players wants to go to the room in the left
+		if (dir == 4) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getEst() instanceof Door) {
 				newRoomNum = 3*x+y+2;
 				curPlayer.setRoom(newRoomNum);
 			}
-			else return -1;
 		}
 		
-		if (dir == 'D' || dir =='d') { //players wants to go to the room in the left
+		if (dir == 3) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getSud() instanceof Door) {
 				newRoomNum = 3*(x+1)+y+1;
 				curPlayer.setRoom(newRoomNum);
 			}
-			else return -1;
 		}
-		
-		return 1;
+		players.set(playerNum, curPlayer);
+		return newRoomNum;
 	}
 	
 	
