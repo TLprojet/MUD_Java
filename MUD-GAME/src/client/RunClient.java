@@ -56,6 +56,10 @@ public class RunClient {
 	new Thread(chatClient).start();
 	
 	System.out.println(server.displayGrid(player.getRoom()));
+	System.out.println("\nListe des commandes : ");
+	System.out.println("\t- \"<msg> pour envoyer un message");
+	System.out.println("\t- quit pour quitter le jeu\n");
+
 	
 	while(running) {
 		try {
@@ -64,6 +68,8 @@ public class RunClient {
 			e.printStackTrace();
 		}
 		
+		int res;
+
 		if(mes.startsWith("\"")){
 			chatClient.send(mes.substring(1,mes.length()));
 		}
@@ -74,9 +80,18 @@ public class RunClient {
 				chatServer.delClientFromChat(chatClient);
 				break;
 			case "Z":
+				res=server.move(playerNum, 'Z');
+				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
+				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");						
 			case "z":
+				res=server.move(playerNum, 'z');
+				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
+				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
 				break;
-			case "Q":
+			case "Q": 
+				res=server.move(playerNum, 'Q');
+				if (res==1) System.out.println(server.displayGrid(player.getRoom()));
+				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");					
 			case "q":
 				break;
 			case "S":

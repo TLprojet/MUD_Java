@@ -24,4 +24,5 @@ public interface GameServerIF extends Remote {
    public int findByName(String playerName) throws RemoteException;
    public Player logIn(int playerNum) throws RemoteException;
    public void logOut(int playerNum) throws RemoteException;
+   public int move(int playerNum, char dir) throws RemoteException;
 }
