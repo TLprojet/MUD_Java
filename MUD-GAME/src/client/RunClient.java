@@ -96,7 +96,6 @@ public class RunClient {
 			case "d":
 				move = 4;
 				break;
-				
 			}
 			if(move !=0){
 				res = server.move(playerNum, move);

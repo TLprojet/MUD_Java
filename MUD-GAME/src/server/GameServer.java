@@ -93,10 +93,10 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	public int move(int playerNum, int dir) throws RemoteException {
 		Player curPlayer = players.get(playerNum);
 		int newRoomNum = -1;
-		
 		int pos = curPlayer.getRoom();
 		int x = ((pos-1)/3);
 		int y = ((pos-1)%3);
+		
 		if (dir == 2) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getOuest() instanceof Door) {
 				newRoomNum = 3*x+y;
