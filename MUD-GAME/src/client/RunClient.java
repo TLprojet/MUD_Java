@@ -53,7 +53,8 @@ public class RunClient {
 	String chatServerURL = "rmi://localhost:1099/" + player.getRoom();
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	ChatClient chatClient = new ChatClient(playerName, chatServer);
-	new Thread(chatClient).start();
+	Thread t = new Thread(chatClient);
+	t.start();
 	
 	System.out.println(server.displayGrid(player.getRoom()));
 	System.out.println("\nListe des commandes : ");
@@ -100,7 +101,17 @@ public class RunClient {
 			if(move !=0){
 				res = server.move(playerNum, move);
 				if (res!=-1){
+					//changement de pièce
 					player.setRoom(res);
+					
+					// changement serveur de chat
+					chatServerURL = "rmi://localhost:1099/" + res;
+					chatServer.delClientFromChat(chatClient);
+					chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
+					chatClient = new ChatClient(playerName, chatServer);
+					t = new Thread(chatClient);
+					
+					//affichage de la grille
 					System.out.println(server.displayGrid(player.getRoom()));
 				}
 				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
