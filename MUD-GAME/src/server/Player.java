@@ -8,12 +8,19 @@ public class Player implements Serializable{
 	private int room;
 	private String playerName;
 	private int status;
+	
 	public Player(int piece, String nomJoueur, int status){
 		super();
 		this.status = status;
 		this.room = piece;
 		this.playerName = nomJoueur;
 	}
+	
+	
+	public void attack() {
+		
+	}
+	
 	public int getStatus() {
 		return status;
 	}

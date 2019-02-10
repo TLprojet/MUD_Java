@@ -80,6 +80,7 @@ public class RunClient {
 			case "quit":
 				server.logOut(playerNum);
 				chatServer.delClientFromChat(chatClient);
+				chatServer.broadcastMessage("Le joueur "+playerName+" s'est déconnecté.\n");
 				break;
 			case "Z":				
 			case "z":
@@ -100,6 +101,7 @@ public class RunClient {
 			}
 			if(move !=0){
 				res = server.move(playerNum, move);
+				chatServer.broadcastMessage("Le joueur "+playerName+" a quitté la pièce.\n");
 				if (res!=-1){
 					//changement de pièce
 					player.setRoom(res);
