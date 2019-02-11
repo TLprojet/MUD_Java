@@ -9,6 +9,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import server.ChatServerIF;
 import server.GlobalServer;
+import server.GlobalServerIF;
 import server.Player;
 import server.GameServerIF;
 
@@ -17,17 +18,24 @@ public class RunClient {
 	
   private static String playerName = "";
   private static String mes = "";
-  private static GameServerIF server;
+  private static GlobalServerIF server;
   private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
   private static int playerNum;
   private static Player player;
   private static boolean running = true;
+  private static GameServerIF gameServer;
     
   public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
     System.out.println("Lancement du jeu");
     
+    //Connexion au serveur global
+    String globalServerURL = "rmi://localhost:1099/global";
+    server = (GlobalServerIF) Naming.lookup(globalServerURL);
+    
     //Connexion au serveur de jeu
-    server = (GameServerIF) Naming.lookup("rmi://localhost:1099/InitialServ");
+    String gameServerURL = "rmi://localhost:1099/18";
+    gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+
     
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo ?");
@@ -50,6 +58,8 @@ public class RunClient {
     
     System.out.println("Vous êtes dans la pièce n°" + player.getRoom());
 
+    
+    // Connexion au serveur de chat
 	String chatServerURL = "rmi://localhost:1099/" + player.getRoom();
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	ChatClient chatClient = new ChatClient(playerName, chatServer);
@@ -101,10 +111,13 @@ public class RunClient {
 			}
 			if(move !=0){
 				res = server.move(playerNum, move);
-				chatServer.broadcastMessage("Le joueur "+playerName+" a quitté la pièce.\n");
 				if (res!=-1){
 					//changement de pièce
 					player.setRoom(res);
+					
+					gameServerURL = "rmi://localhost:1099/1" + res;
+					gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+					
 					
 					// changement serveur de chat
 					chatServerURL = "rmi://localhost:1099/" + res;
