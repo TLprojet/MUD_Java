@@ -9,6 +9,16 @@ public class Player implements Serializable{
 	private String playerName;
 	private int status;
 	
+	
+	/**
+     * Constructeur d'un joueur
+     * @param piece
+     *          Numéro de pièce où le joueur commencera (par défaut 8)
+     * @param nomJoueur
+     * 			Chaine de caractère décrivant le nom du joueur
+     * @param status
+     * 			En combat ou non
+     */
 	public Player(int piece, String nomJoueur, int status){
 		super();
 		this.status = status;

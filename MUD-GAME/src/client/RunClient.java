@@ -8,7 +8,6 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import server.ChatServerIF;
-import server.GlobalServer;
 import server.GlobalServerIF;
 import server.Player;
 import server.GameServerIF;

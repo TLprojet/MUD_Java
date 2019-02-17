@@ -14,7 +14,6 @@ constructeur par défaut qui ne lève pas cette exception. */
 qui contient les différents traitements élémentaires
 pour un objet distant dont l'appel par le stub du client est unique. */
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.rmi.RemoteException;
 
 public class GameServer extends UnicastRemoteObject implements GameServerIF {
@@ -23,6 +22,12 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	private static final long serialVersionUID = 1L;
 	private String serverName;
 	
+	/**
+     * Constructeur d'un serveur de jeu
+     * @param serverName
+     *          Nom du serveur de jeu
+     * @throws RemoteException
+     */
 	protected GameServer(String serverName) throws RemoteException {
     	super();
     	this.serverName = serverName;
