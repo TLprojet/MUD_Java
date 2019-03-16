@@ -1,6 +1,7 @@
 package server;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 public class Grid implements Serializable {
 		
@@ -11,10 +12,6 @@ public class Grid implements Serializable {
 		public static int taille = 4;
 		Room grille[][];
 		
-		
-		/**
-	     * Construction d'une grille
-	     */
 		public Grid () {
 			grille = new Room[taille][taille];
 			//pour chaque ligne de la grille
@@ -44,13 +41,6 @@ public class Grid implements Serializable {
 			}				
 		}
 		
-		
-		/**
-	     * Affichage de la grille en fonction de la position du joueur
-	     * @param currentRoom
-	     *          La pièce où le joueur se trouve actuellement
-	     * @return
-	     */
 		public String displayGrid(int currentRoom) {
 			String chaine="|---------|---------|---------|\n";
 			for (int i=0;i<=2;i++) {

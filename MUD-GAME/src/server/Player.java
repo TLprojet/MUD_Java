@@ -11,21 +11,7 @@ public class Player implements Serializable{
 	private int id;
 	private String name;
 	
-<<<<<<< HEAD
 	public Player(int piece, int id, int healthPoints, String name){
-=======
-	
-	/**
-     * Constructeur d'un joueur
-     * @param piece
-     *          Numéro de pièce où le joueur commencera (par défaut 8)
-     * @param nomJoueur
-     * 			Chaine de caractère décrivant le nom du joueur
-     * @param status
-     * 			En combat ou non
-     */
-	public Player(int piece, String nomJoueur, int status){
->>>>>>> refs/remotes/origin/master
 		super();
 		this.room = piece;
 		this.healthPoints = healthPoints;

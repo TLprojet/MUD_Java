@@ -1,6 +1,7 @@
 package server;
 
 import java.rmi.*;
+import java.util.ArrayList;
 
 /* L'interface doit contenir toutes les méthodes qui seront 
 susceptibles d'être appelées à distance. */
@@ -14,9 +15,6 @@ est en mesure de lever l'exception java.rmi.RemoteException. */
 
 public interface GameServerIF extends Remote {
 
-	/**
-     * @see GameServer#getServerName()
-     */
    public String getServerName() throws RemoteException;
    public int getServerNum() throws RemoteException;
    public void addPlayer(Player p) throws RemoteException;

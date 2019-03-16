@@ -12,19 +12,7 @@ public class Room implements Serializable {
 	private Edge ouest;
 	private Edge est;
 
-	/**
-     * Constructeur d'une pièce
-     * @param idPiece
-     *          Numéro de la pièce (1 à 10)
-     * @param nord
-     * 			Bord nord de la pièce
-     * @param sud
-     * 			Bord sud de la pièce
-     * @param ouest
-     * 			Bord ouest de la pièce
-     * @param est
-     * 			Bord est de la pièce
-     */
+	
 	public Room(int idPiece, Edge nord, Edge sud, Edge ouest, Edge est) {
 		super();
 		this.idPiece = idPiece;
