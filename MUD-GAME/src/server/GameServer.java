@@ -14,6 +14,7 @@ constructeur par défaut qui ne lève pas cette exception. */
 qui contient les différents traitements élémentaires
 pour un objet distant dont l'appel par le stub du client est unique. */
 import java.rmi.server.UnicastRemoteObject;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,6 +23,8 @@ import client.ChatClient;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+=======
+>>>>>>> refs/remotes/origin/master
 import java.rmi.RemoteException;
 
 public class GameServer extends UnicastRemoteObject implements GameServerIF {
@@ -35,7 +38,17 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	private ChatServerIF chatServer;
 	private String chatServerURL;
 	
+<<<<<<< HEAD
 	protected GameServer(String serverName, ArrayList<Player> players, Sin sin) throws RemoteException, MalformedURLException, NotBoundException {
+=======
+	/**
+     * Constructeur d'un serveur de jeu
+     * @param serverName
+     *          Nom du serveur de jeu
+     * @throws RemoteException
+     */
+	protected GameServer(String serverName) throws RemoteException {
+>>>>>>> refs/remotes/origin/master
     	super();
     	this.serverName = serverName;
     	this.players = players;

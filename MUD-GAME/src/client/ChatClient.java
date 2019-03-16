@@ -10,11 +10,35 @@ import server.ChatServerIF;
 public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Runnable {
 
 	private static final long serialVersionUID = 5557769733752232252L;
+	
+	 /**
+     * Nom du chatClient
+     */
 	private String name;
+	
+	 /**
+     * L'interface du ChatServer
+     */
 	private ChatServerIF chatServer;
+	
+	 /**
+     * Booléen décrivant l'état du thread
+     */
 	private boolean running = true;
 
+<<<<<<< HEAD
 	public ChatClient(String name, ChatServerIF chatServer) throws RemoteException {
+=======
+	/**
+     * Constructeur d'un chatClient (client)
+     * @param name
+     *          Nom du chat
+     * @param chatServer
+     * 			L'interface du chatServer
+     * @throws RemoteException
+     */
+	protected ChatClient(String name, ChatServerIF chatServer) throws RemoteException {
+>>>>>>> refs/remotes/origin/master
 		this.name=name;
 		this.chatServer=chatServer;
 		chatServer.registerChatClient(this);
@@ -30,11 +54,23 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 		this.name = name;
 	}
 
-
+	
+	/**
+     * Réception d'un message
+     * @param message
+     *          Message à réceptionner
+     * @throws RemoteException
+     */
 	public void retrieveMessage(String message) throws RemoteException {
 		System.out.println(message);
 	}
 	
+	/**
+     * Envoi d'un message
+     * @param message
+     *          Message à envoyyer
+     * @throws RemoteException
+     */
 	public void send(String message) throws RemoteException {		
 		chatServer.broadcastMessage(name + ": " + message);
 	}
