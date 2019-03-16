@@ -20,23 +20,16 @@ public class RunClient {
   private static String mes = "";
   private static GlobalServerIF server;
   private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-  private static int playerNum;
-  private static Player player;
-  private static boolean running = true;
+  private static int accNum;
   private static GameServerIF gameServer;
+  private static String gameServerURL;
     
   public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
-    System.out.println("Lancement du jeu");
     
     //Connexion au serveur global
     String globalServerURL = "rmi://localhost:1099/global";
     server = (GlobalServerIF) Naming.lookup(globalServerURL);
-    
-    //Connexion au serveur de jeu
-    String gameServerURL = "rmi://localhost:1099/18";
-    gameServer = (GameServerIF) Naming.lookup(gameServerURL);
-
-    
+     
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo ?");
     try {
@@ -46,33 +39,37 @@ public class RunClient {
       System.err.println("I/O error.");
       System.err.println(e.getMessage());
     }
-    playerNum = server.findByName(playerName);
-    if(playerNum != -1) {
-    	player = server.logIn(playerNum);
+    accNum = server.findByName(playerName);
+    if(accNum != -1) {
+    	server.logIn(accNum);
     	System.out.println(playerName + " s'est reconnecté.");
+    	gameServerURL = "rmi://localhost:1099/1" + server.getAccounts().get(accNum).getPlayer().getRoom();
     } else {
-    	player = server.addPlayer(playerName);
-    	playerNum = (server.getPlayers().size()-1);
+    	server.addAccount(playerName);
+    	accNum = (server.getAccounts().size()-1);
     	System.out.println(playerName + " a créé un compte.");
+    	gameServerURL = "rmi://localhost:1099/18";
     }
     
-    System.out.println("Vous êtes dans la pièce n°" + player.getRoom());
+    //Connexion au serveur de jeu
+    gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+    System.out.println("Vous êtes dans la pièce n°" + gameServer.getServerNum());
 
     
     // Connexion au serveur de chat
-	String chatServerURL = "rmi://localhost:1099/" + player.getRoom();
+	String chatServerURL = "rmi://localhost:1099/" + gameServer.getServerNum();
 	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
 	ChatClient chatClient = new ChatClient(playerName, chatServer);
 	Thread t = new Thread(chatClient);
 	t.start();
 	
-	System.out.println(server.displayGrid(player.getRoom()));
+	System.out.println(server.displayGrid(gameServer.getServerNum()));
 	System.out.println("\nListe des commandes : ");
 	System.out.println("\t- \"<msg> pour envoyer un message");
 	System.out.println("\t- quit pour quitter le jeu\n");
 
 	
-	while(running) {
+	while(true) {
 		try {
 			mes = in.readLine();
 		} catch (IOException e) {
@@ -88,9 +85,9 @@ public class RunClient {
 			int move = 0;
 			switch(mes) {
 			case "quit":
-				server.logOut(playerNum);
+				server.logOut(accNum, gameServer.getServerNum());
 				chatServer.delClientFromChat(chatClient);
-				chatServer.broadcastMessage("Le joueur "+playerName+" s'est déconnecté.\n");
+				chatServer.broadcastMessage("Le joueur "+ playerName +" s'est déconnecté.\n");
 				break;
 			case "Z":				
 			case "z":
@@ -108,16 +105,18 @@ public class RunClient {
 			case "d":
 				move = 4;
 				break;
+			case "A":
+			case "a":
+				if(!(gameServer.attack(gameServer.getPlayerNumById(accNum)))){
+					server.die(accNum, gameServer.getServerNum());
+				}
 			}
 			if(move !=0){
-				res = server.move(playerNum, move);
-				if (res!=-1){
+				res = server.move(gameServer.getServerNum(), move, gameServer.getPlayerById(accNum));
+				if (res!=-1){					
 					//changement de pièce
-					player.setRoom(res);
-					
 					gameServerURL = "rmi://localhost:1099/1" + res;
 					gameServer = (GameServerIF) Naming.lookup(gameServerURL);
-					
 					
 					// changement serveur de chat
 					chatServerURL = "rmi://localhost:1099/" + res;
@@ -127,7 +126,7 @@ public class RunClient {
 					t = new Thread(chatClient);
 					
 					//affichage de la grille
-					System.out.println(server.displayGrid(player.getRoom()));
+					System.out.println(server.displayGrid(gameServer.getServerNum()));
 				}
 				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
 			}

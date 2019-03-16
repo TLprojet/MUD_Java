@@ -4,43 +4,28 @@ import java.io.Serializable;
 
 public class Sin implements Serializable {
 	
-	private int room;
 	private String sinName;
-	private int status;
+	private int hp;
 	
-	
-	public Sin(int room, String sinName, int status) {
+	public Sin(String sinName, int hp) {
 		super();
-		this.room = room;
 		this.sinName = sinName;
-		this.status = status;
+		this.hp = hp;
 	}
 
+	public int getHp() {
+		return hp;
+	}
 
-	public void Attack () {
-		
+	public void setHp(int hp) {
+		this.hp = hp;
 	}
-	
-	
-	public int getRoom() {
-		return room;
-	}
-	public void setRoom(int room) {
-		this.room = room;
-	}
+
 	public String getSinName() {
 		return sinName;
 	}
 	public void setSinName(String sinName) {
 		this.sinName = sinName;
-	}
-	public int getStatus() {
-		return status;
-	}
-	public void setStatus(int status) {
-		this.status = status;
-	}
-	
-	
+	}	
 	
 }

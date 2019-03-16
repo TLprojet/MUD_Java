@@ -16,5 +16,10 @@ est en mesure de lever l'exception java.rmi.RemoteException. */
 public interface GameServerIF extends Remote {
 
    public String getServerName() throws RemoteException;
-
+   public int getServerNum() throws RemoteException;
+   public void addPlayer(Player p) throws RemoteException;
+   public void delPlayer(Player p) throws RemoteException;
+   public Player getPlayerById(int id) throws RemoteException;
+   public boolean attack(int playerNum) throws RemoteException;
+   public int getPlayerNumById(int id) throws RemoteException;
 }

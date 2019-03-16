@@ -1,31 +1,34 @@
 package server;
 
 import java.io.Serializable;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private int room;
-	private String playerName;
-	private int status;
+	private int healthPoints;
+	private int id;
+	private String name;
 	
-	public Player(int piece, String nomJoueur, int status){
+	public Player(int piece, int id, int healthPoints, String name){
 		super();
-		this.status = status;
 		this.room = piece;
-		this.playerName = nomJoueur;
+		this.healthPoints = healthPoints;
+		this.id = id;
+		this.name = name;
 	}
-	
-	
-	public void attack() {
-		
+	public String getName() {
+		return name;
 	}
-	
-	public int getStatus() {
-		return status;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public void setStatus(int status) {
-		this.status = status;
+	public int getHealthPoints() {
+		return healthPoints;
+	}
+	public void setHealthPoints(int healthPoints) {
+		this.healthPoints = healthPoints;
 	}
 	public int getRoom() {
 		return room;
@@ -33,10 +36,10 @@ public class Player implements Serializable{
 	public void setRoom(int piece) {
 		this.room = piece;
 	}
-	public String getPlayerName() {
-		return playerName;
+	public int getId() {
+		return id;
 	}
-	public void setPlayerName(String nomJoueur) {
-		this.playerName = nomJoueur;
+	public void setId(int id) {
+		this.id = id;
 	}
 }

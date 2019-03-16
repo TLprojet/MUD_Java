@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -20,20 +21,20 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	private static ArrayList<ChatServerIF> chatServers;
 	private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	private static String mes;
-	private static ArrayList<Player> players;
 	private Grid dj = new Grid();
+	private static ArrayList<Account> accounts;
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, NotBoundException {
 		LocateRegistry.createRegistry(1099);
-		GlobalServer globalServ = new GlobalServer(new ArrayList<GameServerIF>(), new ArrayList<ChatServerIF>(), new ArrayList<Player>());
+		GlobalServer globalServ = new GlobalServer(new ArrayList<GameServerIF>(), new ArrayList<ChatServerIF>(), new ArrayList<Account>());
 		Naming.rebind("global", globalServ);
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
-			globalServ.addGameServer("1" + num, new GameServer("1" + num));
+			globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques", i)));
 		}
 		System.out.println();
-		System.out.println("Entrer la lettre p pour lister les joueurs");
+		// System.out.println("Entrer la lettre p pour lister les joueurs");
 		
 		while(true){
 			mes = in.readLine();
@@ -45,11 +46,19 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		
 	}
 	
-	public GlobalServer(ArrayList<GameServerIF> gameServers, ArrayList<ChatServerIF> chatServers, ArrayList<Player> players) throws RemoteException{
+	public ArrayList<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(ArrayList<Account> accounts) {
+		GlobalServer.accounts = accounts;
+	}
+
+	public GlobalServer(ArrayList<GameServerIF> gameServers, ArrayList<ChatServerIF> chatServers, ArrayList<Account> accounts) throws RemoteException{
 		super();
 		this.gameServers = gameServers;
 		this.chatServers = chatServers;
-		this.players = players;
+		this.accounts = accounts;
 	}
 	
 	public void addGameServer(String nom, GameServer serv) throws RemoteException, MalformedURLException{
@@ -64,6 +73,57 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		System.out.println("Serveur de chat de la pièce n°" + nom + " lancé");
 	}
 	
+	public int findByName(String name){
+		for(int i=0; i<accounts.size(); i++){
+			if(accounts.get(i).getName().equals(name)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public void logOut(int accNum, int room) throws RemoteException {
+		Account acc = accounts.get(accNum);
+		Player p = gameServers.get(room).getPlayerById(acc.getPlayer().getId());
+		accounts.set(accNum, new Account(p, 0, acc.getName()));
+		gameServers.get(room).delPlayer(p);
+		System.out.println("Le joueur " + acc.getName() + " s'est déconnecté.");
+	}
+	
+	public Player logIn(int accNum) throws RemoteException {
+		Account acc = accounts.get(accNum);
+		acc.setStatus(1);
+		accounts.set(accNum, acc);
+		System.out.println("Le joueur " + acc.getName() + " s'est connecté.");
+		gameServers.get(acc.getPlayer().getRoom()).addPlayer(acc.getPlayer());
+		return acc.getPlayer();
+	}
+	
+	public void die(int accNum, int room) throws RemoteException {
+		Account acc = accounts.get(accNum);
+		Player p = gameServers.get(room).getPlayerById(accNum);
+		p = new Player(8, accNum, 8, p.getName());
+		accounts.set(accNum, new Account(p, 1, acc.getName()));
+		gameServers.get(room).delPlayer(p);
+		gameServers.get(8).addPlayer(p);
+		System.out.println("Le joueur " + acc.getName() + " est mort.");
+	}
+	
+	public Account addAccount(String name) throws RemoteException{
+		Account toAdd = new Account(new Player(8, accounts.size(), 8, name), 1, name);
+		accounts.add(toAdd);
+		System.out.println("Le joueur " + toAdd.getName() + " a créé un compte.");
+		gameServers.get(8).addPlayer(toAdd.getPlayer());
+		return toAdd;
+	}
+	
+	public void delAccount(int num) throws RemoteException {
+		Account a = accounts.get(num);
+		accounts.remove(a);
+		gameServers.get(a.getPlayer().getRoom()).delPlayer(a.getPlayer());
+		System.out.println("Le joueur a bien été supprimé de la base.");
+	}
+	
 	public static ArrayList<GameServerIF> getGameServers() {
 		return gameServers;
 	}
@@ -73,89 +133,51 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	}
 	
 	public static void printPlayers() throws RemoteException{
-		for(int i=0; i<players.size(); i++){
-			Player player = players.get(i);
-			System.out.println("- " + player.getPlayerName() + " : " + player.getRoom());
-		}
+//		for(int i=0; i<players.size(); i++){
+//			Player player = players.get(i);
+//			System.out.println("- " + player.getPlayerName() + " : " + player.getRoom());
+//		}
 	}
 	
-	public ArrayList<Player> getPlayers() {
-		return players;
-	}
-	
-	public Player addPlayer(String name){
-		Player toAdd = new Player(8, name, 1);
-		players.add(toAdd);
-		System.out.println("Le joueur " + toAdd.getPlayerName() + " a créé un compte.");
-		return toAdd;
-	}
-	
-	public void delPlayer(String name, int room) {
-		players.remove(players.indexOf(new Player(room, name, 1)));
-		System.out.println("Le joueur " + name + " a été supprimé de la base.");
-	}
-	
-	public void logOut(int playerNum) {
-		Player curPlayer = players.get(playerNum);
-		players.set(playerNum, new Player(curPlayer.getRoom(), curPlayer.getPlayerName(), 0));
-		System.out.println("Le joueur " + curPlayer.getPlayerName() + " s'est déconnecté.");
-	}
-	
-	public Player logIn(int playerNum) {
-		Player curPlayer = players.get(playerNum);
-		curPlayer.setStatus(1);
-		players.set(playerNum, curPlayer);
-		System.out.println("Le joueur " + curPlayer.getPlayerName() + " s'est connecté.");
-		return curPlayer;
-	}
-	
-	public int findByName(String name) {
-		for(int i = 0; i<players.size();i++) {
-			if(players.get(i).getPlayerName().equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+//	public int getPlayerRoom(int playerNum){
+//		return players.get(playerNum).getRoom();
+//	}
 	
 	//in : playerNum int, char dir (direction : ZQSD)
 	//out: 1 if everything worked fine
 	//     -1 can't go there (wall)
-	public int move(int playerNum, int dir){
-		Player curPlayer = players.get(playerNum);
+	public int move(int pos, int dir, Player p) throws RemoteException{
 		int newRoomNum = -1;
-		int pos = curPlayer.getRoom();
 		int x = ((pos-1)/3);
 		int y = ((pos-1)%3);
 		
 		if (dir == 2) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getOuest() instanceof Door) {
 				newRoomNum = 3*x+y;
-				curPlayer.setRoom(newRoomNum);
 			}
 		}
 		
 		if (dir == 1) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getNord() instanceof Door) {
 				newRoomNum = 3*(x-1)+y+1;
-				curPlayer.setRoom(newRoomNum);
 			}
 		}
 		
 		if (dir == 4) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getEst() instanceof Door) {
 				newRoomNum = 3*x+y+2;
-				curPlayer.setRoom(newRoomNum);
 			}
 		}
 		
 		if (dir == 3) { //players wants to go to the room in the left
 			if (dj.grille[x][y].getSud() instanceof Door) {
 				newRoomNum = 3*(x+1)+y+1;
-				curPlayer.setRoom(newRoomNum);
 			}
 		}
-		players.set(playerNum, curPlayer);
+		if(newRoomNum != -1){
+			gameServers.get(pos).delPlayer(p);
+			gameServers.get(newRoomNum).addPlayer(p);
+		}
 		return newRoomNum;
 	}
 	

@@ -14,7 +14,7 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 	private ChatServerIF chatServer;
 	private boolean running = true;
 
-	protected ChatClient(String name, ChatServerIF chatServer) throws RemoteException {
+	public ChatClient(String name, ChatServerIF chatServer) throws RemoteException {
 		this.name=name;
 		this.chatServer=chatServer;
 		chatServer.registerChatClient(this);
