@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.concurrent.TimeUnit;
+
 import server.ChatServerIF;
 import server.GlobalServer;
 import server.GlobalServerIF;
@@ -24,7 +26,7 @@ public class RunClient {
   private static GameServerIF gameServer;
   private static String gameServerURL;
     
-  public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
+  public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException, InterruptedException {
     
     //Connexion au serveur global
     String globalServerURL = "rmi://localhost:1099/global";
@@ -107,7 +109,9 @@ public class RunClient {
 				break;
 			case "A":
 			case "a":
-				if(!(gameServer.attack(gameServer.getPlayerNumById(accNum)))){
+				int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+				TimeUnit.SECONDS.sleep(1);
+				if(x == 1){
 					server.die(accNum, gameServer.getServerNum());
 				}
 			}

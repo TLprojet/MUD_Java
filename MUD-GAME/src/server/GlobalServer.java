@@ -1,6 +1,7 @@
 package server;
 
 import java.io.BufferedReader;
+import database.Sql;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -31,15 +32,21 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
-			globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques", i)));
+			globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques")));
 		}
 		System.out.println();
 		// System.out.println("Entrer la lettre p pour lister les joueurs");
 		
 		while(true){
 			mes = in.readLine();
-			if(mes.equals("p")){
-				printPlayers();
+			if(mes.equals("save")){
+				Sql db = new Sql();
+				db.connectDB();
+				db.clearPlayersDB();
+				for(int i = 0; i<accounts.size(); i++) {
+					Player p = accounts.get(i).getPlayer();
+					db.insertPlayersDB("("+ p.getRoom() + "," + p.getId() + "," + p.getHealthPoints() + ",\'" + p.getName() + "\',\'" + arrayToString(p.getSins()) + "\'," + p.getMaxHp()+ ")");
+				}
 			}
 		}
 		
@@ -52,6 +59,14 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 
 	public void setAccounts(ArrayList<Account> accounts) {
 		GlobalServer.accounts = accounts;
+	}
+	
+	public static String arrayToString(int[] arr) {
+		String str = "";
+		for(int i = 0; i < arr.length; i++) {
+			str = str + Integer.toString(arr[i]);
+		}
+		return str;
 	}
 
 	public GlobalServer(ArrayList<GameServerIF> gameServers, ArrayList<ChatServerIF> chatServers, ArrayList<Account> accounts) throws RemoteException{
@@ -102,7 +117,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	public void die(int accNum, int room) throws RemoteException {
 		Account acc = accounts.get(accNum);
 		Player p = gameServers.get(room).getPlayerById(accNum);
-		p = new Player(8, accNum, 8, p.getName());
+		p = new Player(8, accNum, p.getMaxHp(), p.getName(), p.getSins(), p.getMaxHp());
 		accounts.set(accNum, new Account(p, 1, acc.getName()));
 		gameServers.get(room).delPlayer(p);
 		gameServers.get(8).addPlayer(p);
@@ -110,7 +125,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	}
 	
 	public Account addAccount(String name) throws RemoteException{
-		Account toAdd = new Account(new Player(8, accounts.size(), 8, name), 1, name);
+		Account toAdd = new Account(new Player(8, accounts.size(), 10, name, new int[9], 10), 1, name);
 		accounts.add(toAdd);
 		System.out.println("Le joueur " + toAdd.getName() + " a créé un compte.");
 		gameServers.get(8).addPlayer(toAdd.getPlayer());
