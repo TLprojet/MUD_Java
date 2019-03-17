@@ -35,7 +35,7 @@ public class Sql {
             String str = new String();
             ArrayList<Player> players = new ArrayList<Player>();
             while(result.next()){
-            	Player p = new Player((int)(result.getObject(1)),(int)(result.getObject(2)),(int)(result.getObject(3)),result.getObject(4).toString(),result.getObject(5).toString().chars().map(c -> c-'0').toArray(),(int)(result.getObject(6)));
+            	Player p = new Player((int)(result.getObject(2)),(int)(result.getObject(1)) - 1,(int)(result.getObject(3)),result.getObject(4).toString(),result.getObject(5).toString().chars().map(c -> c-'0').toArray(),(int)(result.getObject(6)));
                 players.add(p);
             }
             return players;

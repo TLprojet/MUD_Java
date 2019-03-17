@@ -22,4 +22,5 @@ public interface GameServerIF extends Remote {
    public Player getPlayerById(int id) throws RemoteException;
    public int attack(int playerNum) throws RemoteException;
    public int getPlayerNumById(int id) throws RemoteException;
+   public ArrayList<Player> getPlayers() throws RemoteException;
 }

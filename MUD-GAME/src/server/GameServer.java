@@ -50,6 +50,10 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
     	
 	}
 
+	public static void setPlayers(ArrayList<Player> players) {
+		GameServer.players = players;
+	}
+
 	public String getServerName() {
 		return serverName;
 	}

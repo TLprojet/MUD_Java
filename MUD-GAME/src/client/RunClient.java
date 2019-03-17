@@ -35,7 +35,7 @@ public class RunClient {
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo ?");
     try {
-      System.out.print(">> ");
+      System.out.print(">> "); 
       playerName = in.readLine();
     } catch (IOException e) {
       System.err.println("I/O error.");
@@ -43,11 +43,11 @@ public class RunClient {
     }
     accNum = server.findByName(playerName);
     if(accNum != -1) {
-    	server.logIn(accNum);
+    	int room = server.logIn(accNum);
     	System.out.println(playerName + " s'est reconnecté.");
-    	gameServerURL = "rmi://localhost:1099/1" + server.getAccounts().get(accNum).getPlayer().getRoom();
+    	gameServerURL = "rmi://localhost:1099/1" + room; //+ server.getAccounts().get(accNum).getPlayer().getRoom();
     } else {
-    	server.addAccount(playerName);
+    	server.addNewAccount(playerName);
     	accNum = (server.getAccounts().size()-1);
     	System.out.println(playerName + " a créé un compte.");
     	gameServerURL = "rmi://localhost:1099/18";
@@ -116,7 +116,7 @@ public class RunClient {
 				}
 			}
 			if(move !=0){
-				res = server.move(gameServer.getServerNum(), move, gameServer.getPlayerById(accNum));
+				res = server.move(gameServer.getServerNum(), move, gameServer.getPlayerById(accNum), accNum);
 				if (res!=-1){					
 					//changement de pièce
 					gameServerURL = "rmi://localhost:1099/1" + res;
