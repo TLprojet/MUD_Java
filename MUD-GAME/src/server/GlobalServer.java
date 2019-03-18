@@ -35,7 +35,11 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
-			globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques")));
+			if(i==9) {
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques", 15)));
+			} else {
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques",5)));
+			}
 		}
 		System.out.println("Tous les serveurs ont été correctement lancés.\n");
 		
@@ -71,7 +75,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 				
 				for(int i = 0; i<accounts.size(); i++) {
 					Player p = accounts.get(i).getPlayer();
-					db.insertPlayersDB("(NULL,"+ p.getRoom() + "," + p.getHealthPoints() + ",\'" + p.getName() + "\',\'" + arrayToString(p.getSins()) + "\'," + p.getMaxHp()+ ")");
+					db.insertPlayersDB("(NULL,"+ p.getRoom() + "," + p.getHealthPoints() + ",\'" + p.getName() + "\',\'" + globalServ.arrayToString(p.getSins()) + "\'," + p.getMaxHp()+ ")");
 				}
 				
 				System.out.println("Les données ont bien été sauvegardées.");
@@ -82,7 +86,13 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 				System.out.println("Liste des joueurs :");
 				for(int i = 0; i<accounts.size();i++) {
 					Account a = accounts.get(i);
-					System.out.println("   " + a.getName() + ", Salle n°" + a.getPlayer().getRoom() + ", " + a.getPlayer().getHealthPoints() + " points de vie.");
+					String str;
+					if(a.getStatus() == 1) {
+						str = "Connecté";
+					} else {
+						str = "Déconnecté";
+					}
+					System.out.println("   " + a.getName() + ", Salle n°" + a.getPlayer().getRoom() + ", " + a.getPlayer().getHealthPoints() + " points de vie, " + str);
 				}
 				break;
 				
@@ -107,7 +117,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	}
 	
 	// Converti un tableau en String pour pouvoir l'insérer dans la BBD
-	public static String arrayToString(int[] arr) {
+	public String arrayToString(int[] arr) throws RemoteException {
 		String str = "";
 		for(int i = 0; i < arr.length; i++) {
 			str = str + Integer.toString(arr[i]);
@@ -150,7 +160,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	// Indique au joueur s'il peut combattre un pêché dans sa position actuelle
 	public boolean canFight(int accNum, int room) throws RemoteException{
 		int[] sins = accounts.get(accNum).getPlayer().getSins();
-		return (sins[room-1] == 0 && room != 8);
+		return (sins[room-1] == 0 && room != 8 && room != 9);
 	}
 	
 	// Déconnexion d'un joueur
@@ -158,26 +168,30 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		Account acc = accounts.get(accNum);
 		Player p = gameServers.get(room-1).getPlayerById(acc.getPlayer().getId());
 		accounts.set(accNum, new Account(p, 0, acc.getName()));
-		gameServers.get(room-1).delPlayer(p);
+		gameServers.get(room-1).delPlayer(gameServers.get(room-1).getPlayerNumById(accNum));
 		System.out.println("Le joueur " + acc.getName() + " s'est déconnecté.");
 	}
 	
 	// Connexion d'un joueur
 	public int logIn(int accNum) throws RemoteException {
-		Account acc = new Account(accounts.get(accNum).getPlayer(), 1, accounts.get(accNum).getName());
-		accounts.set(accNum, acc);
-		System.out.println("Le joueur " + acc.getName() + " s'est connecté.");
-		gameServers.get(acc.getPlayer().getRoom()-1).addPlayer(acc.getPlayer());
-		return acc.getPlayer().getRoom();
+		if(accounts.get(accNum).getStatus()==1) {
+			return -1;
+		} else {
+			Account acc = new Account(accounts.get(accNum).getPlayer(), 1, accounts.get(accNum).getName());
+			accounts.set(accNum, acc);
+			System.out.println("Le joueur " + acc.getName() + " s'est connecté.");
+			gameServers.get(acc.getPlayer().getRoom()-1).addPlayer(acc.getPlayer());
+			return acc.getPlayer().getRoom();
+		}
 	}
 	
 	// Mort d'un joueur
 	public void die(int accNum, int room) throws RemoteException {
 		Account acc = accounts.get(accNum);
 		Player p = gameServers.get(room-1).getPlayerById(accNum);
-		p = new Player(8, accNum, p.getMaxHp(), p.getName(), p.getSins(), p.getMaxHp());
+		p = new Player(8, accNum, 10, acc.getName(), new int[9], 10);
 		accounts.set(accNum, new Account(p, 1, acc.getName()));
-		gameServers.get(room-1).delPlayer(p);
+		gameServers.get(room-1).delPlayer(gameServers.get(room-1).getPlayerNumById(accNum));
 		gameServers.get(7).addPlayer(p);
 		System.out.println("Le joueur " + acc.getName() + " est mort.");
 	}
@@ -201,7 +215,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	public void delAccount(int num) throws RemoteException {
 		Account a = accounts.get(num);
 		accounts.remove(a);
-		gameServers.get(a.getPlayer().getRoom()-1).delPlayer(a.getPlayer());
+		gameServers.get(a.getPlayer().getRoom()-1).delPlayer(gameServers.get(a.getPlayer().getRoom()-1).getPlayerNumById(num));
 		System.out.println("Le joueur a bien été supprimé de la base.");
 	}
 	
@@ -248,7 +262,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 			newRoomNum = 10;
 		}
 		if(newRoomNum != -1){
-			gameServers.get(pos-1).delPlayer(p);
+			gameServers.get(pos-1).delPlayer(gameServers.get(pos-1).getPlayerNumById(accNum));
 			p.setRoom(newRoomNum);
 		
 			accounts.set(accNum, new Account(p, 1, p.getName()));

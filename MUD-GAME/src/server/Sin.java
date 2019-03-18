@@ -7,10 +7,10 @@ public class Sin implements Serializable {
 	private String sinName;
 	private int hp;
 	
-	public Sin(String sinName) {
+	public Sin(String sinName, int hp) {
 		super();
 		this.sinName = sinName;
-		this.hp = 5;
+		this.hp = hp;
 	}
 
 	public int getHp() {

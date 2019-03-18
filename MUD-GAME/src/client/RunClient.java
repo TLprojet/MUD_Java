@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import server.ChatServerIF;
@@ -47,8 +48,14 @@ public class RunClient {
     accNum = server.findByName(playerName);
     if(accNum != -1) {
     	int room = server.logIn(accNum);
-    	System.out.println(playerName + " s'est reconnecté.");
-    	gameServerURL = "rmi://localhost:1099/1" + room; 
+    	if(room != -1) {
+    		System.out.println(playerName + " s'est reconnecté.");
+        	gameServerURL = "rmi://localhost:1099/1" + room; 
+    	} else {
+    		System.out.println("Ce joueur est déjà connecté.");
+    		System.out.println("Merci de relancer le client et de choisir un autre pseudonyme.");
+    	}
+    	
     } else {
     	server.addNewAccount(playerName);
     	accNum = (server.getAccounts().size()-1);
@@ -128,9 +135,14 @@ public class RunClient {
 				// Attaque le pêché si le joueur y est autorisé
 				if(server.canFight(accNum, gameServer.getServerNum())) {
 					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+					System.out.println(server.arrayToString(gameServer.getPlayerById(accNum).getSins()));
 					if(x == 1){
 						// Si le joueur meurt en combattant
 						server.die(accNum, gameServer.getServerNum());
+						System.out.println("Vous êtes mort.");
+						gameServerURL = "rmi://localhost:1099/18";
+						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+						System.out.println(server.displayGrid(gameServer.getServerNum()));
 					} else if (x==2) {
 						// Si le joueur a tué tous les pêchés
 						System.out.println("Vous avez vaincu tous les pêchés!");
@@ -142,13 +154,18 @@ public class RunClient {
 					System.out.println("Il n'y a pas de pêché à combattre ici, ou vous l'avez déjà vaincu.");
 				}
 				break;
-				
+			
+			case"F":
 			case"f":
 				// Attaque le boss si le joueur est dans la bonne salle
 				if(gameServer.getServerNum()==10) {
 					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
 					if(x == 1){
 						server.die(accNum, gameServer.getServerNum());
+						System.out.println("Vous êtes mort.");
+						gameServerURL = "rmi://localhost:1099/18";
+						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+						System.out.println(server.displayGrid(gameServer.getServerNum()));
 					} else if (x==2) {
 						// Si le joueur fini le jeu
 						System.out.println("FELICITATIONS! Vous avez terminé le jeu.");
@@ -156,6 +173,7 @@ public class RunClient {
 				} else {
 					System.out.println("Vous devez d'abord vaincre les autres pêchés pour combattre le boss.");
 				}
+				break;
 			}
 			
 			if(move !=0){
@@ -173,9 +191,20 @@ public class RunClient {
 					chatClient = new ChatClient(playerName, chatServer);
 					t = new Thread(chatClient);
 					
+					// Affiche la liste des joueurs présents dans la salle
+					ArrayList<Player> players = gameServer.getPlayers();
+					System.out.println("Points de vie du pêché : " + gameServer.getSin().getHp());
+					System.out.println("Liste des joueurs de la salle " + gameServer.getServerNum() + " :");
+					for(int i=0; i<players.size();i++) {
+						System.out.println("\t" + players.get(i).getName());
+					}
+					
 					//affichage de la grille
 					if(res!=10) {
 						System.out.println(server.displayGrid(gameServer.getServerNum()));
+					}
+					if(res == 9) {
+						System.out.println("Vous avez gagné 2 points de vie en entrant dans la salle 9");
 					}
 				}
 				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	

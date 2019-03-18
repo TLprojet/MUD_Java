@@ -19,4 +19,5 @@ public interface GlobalServerIF extends Remote {
 	public void delAccount(int num) throws RemoteException;
 	public void die(int accNum, int room) throws RemoteException;
 	public boolean canFight(int accNum, int room) throws RemoteException;
+	public String arrayToString(int[] arr) throws RemoteException;
 }
