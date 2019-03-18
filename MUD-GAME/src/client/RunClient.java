@@ -31,7 +31,8 @@ public class RunClient {
     //Connexion au serveur global
     String globalServerURL = "rmi://localhost:1099/global";
     server = (GlobalServerIF) Naming.lookup(globalServerURL);
-     
+    
+    // Entrée du pseudonyme par le client
     System.out.println("Bienvenue !");
     System.out.println("Quel est votre pseudo ?");
     try {
@@ -41,11 +42,13 @@ public class RunClient {
       System.err.println("I/O error.");
       System.err.println(e.getMessage());
     }
+    
+    // Test pour savoir il faut créer un nouveau compte ou si le joueur a déjà joué
     accNum = server.findByName(playerName);
     if(accNum != -1) {
     	int room = server.logIn(accNum);
     	System.out.println(playerName + " s'est reconnecté.");
-    	gameServerURL = "rmi://localhost:1099/1" + room; //+ server.getAccounts().get(accNum).getPlayer().getRoom();
+    	gameServerURL = "rmi://localhost:1099/1" + room; 
     } else {
     	server.addNewAccount(playerName);
     	accNum = (server.getAccounts().size()-1);
@@ -66,11 +69,13 @@ public class RunClient {
 	t.start();
 	
 	System.out.println(server.displayGrid(gameServer.getServerNum()));
-	System.out.println("\nListe des commandes : ");
+	System.out.println("Liste des commandes : ");
 	System.out.println("\t- \"<msg> pour envoyer un message");
-	System.out.println("\t- quit pour quitter le jeu\n");
+	System.out.println("\t- quit pour quitter le jeu");
+	System.out.println("\t- Z,Q,S,D pour se déplacer");
+	System.out.println("\t- A pour attaquer");
 
-	
+	// Attente des commandes joueur
 	while(true) {
 		try {
 			mes = in.readLine();
@@ -86,39 +91,78 @@ public class RunClient {
 		else {
 			int move = 0;
 			switch(mes) {
+			
 			case "quit":
+				// Déconnexion
 				server.logOut(accNum, gameServer.getServerNum());
 				chatServer.delClientFromChat(chatClient);
 				chatServer.broadcastMessage("Le joueur "+ playerName +" s'est déconnecté.\n");
 				break;
+				
 			case "Z":				
 			case "z":
+				// Déplacement vers le haut
 				move = 1;
 				break;
+				
 			case "Q": 				
 			case "q":
+				// Déplacement vers la gauche
 				move = 2;
 				break;
+				
 			case "S":
 			case "s":
+				// Déplacement vers le bas
 				move = 3;
 				break;
+				
 			case "D":
 			case "d":
+				// Déplacement vers la droite
 				move = 4;
 				break;
+				
 			case "A":
 			case "a":
-				int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
-				TimeUnit.SECONDS.sleep(1);
-				if(x == 1){
-					server.die(accNum, gameServer.getServerNum());
+				// Attaque le pêché si le joueur y est autorisé
+				if(server.canFight(accNum, gameServer.getServerNum())) {
+					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+					if(x == 1){
+						// Si le joueur meurt en combattant
+						server.die(accNum, gameServer.getServerNum());
+					} else if (x==2) {
+						// Si le joueur a tué tous les pêchés
+						System.out.println("Vous avez vaincu tous les pêchés!");
+						System.out.println("Vous devez maintenant combattre le boss.");
+						System.out.println("C'est un combat à mort. Appuyez sur f pour le combattre.");
+						move = 10;
+					}
+				} else {
+					System.out.println("Il n'y a pas de pêché à combattre ici, ou vous l'avez déjà vaincu.");
+				}
+				break;
+				
+			case"f":
+				// Attaque le boss si le joueur est dans la bonne salle
+				if(gameServer.getServerNum()==10) {
+					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+					if(x == 1){
+						server.die(accNum, gameServer.getServerNum());
+					} else if (x==2) {
+						// Si le joueur fini le jeu
+						System.out.println("FELICITATIONS! Vous avez terminé le jeu.");
+					}
+				} else {
+					System.out.println("Vous devez d'abord vaincre les autres pêchés pour combattre le boss.");
 				}
 			}
+			
 			if(move !=0){
+				// Si le joueur souhaite se déplacer, on appelle la méthode move du serveur global
 				res = server.move(gameServer.getServerNum(), move, gameServer.getPlayerById(accNum), accNum);
 				if (res!=-1){					
-					//changement de pièce
+					//changement de serveur de jeu
 					gameServerURL = "rmi://localhost:1099/1" + res;
 					gameServer = (GameServerIF) Naming.lookup(gameServerURL);
 					
@@ -130,7 +174,9 @@ public class RunClient {
 					t = new Thread(chatClient);
 					
 					//affichage de la grille
-					System.out.println(server.displayGrid(gameServer.getServerNum()));
+					if(res!=10) {
+						System.out.println(server.displayGrid(gameServer.getServerNum()));
+					}
 				}
 				if (res==-1) System.out.println("Vous ne pouvez pas aller ici.\n");	
 			}

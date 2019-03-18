@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 import client.ChatClient;
 
@@ -36,12 +37,14 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	private ChatServerIF chatServer;
 	private String chatServerURL;
 	
+	// Constructeur du serveur de jeu
 	protected GameServer(String serverName, ArrayList<Player> players, Sin sin) throws RemoteException, MalformedURLException, NotBoundException {
     	super();
     	this.serverName = serverName;
     	this.players = players;
     	this.sin = sin;
     	
+    	// Le serveur de jeu se connecte au serveur de chat correspondant
     	chatServerURL = "rmi://localhost:1099/" + this.getServerName().substring(1, serverName.length());
     	chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
     	chatClient = new ChatClient("Serveur", chatServer);
@@ -66,8 +69,9 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		return players;
 	}
 	
+	// Récupère le numéro de serveur de jeu (donc numéro de salle)
 	public int getServerNum(){
-		return Integer.parseInt(serverName.substring(1, 2));
+		return Integer.parseInt(serverName.substring(1, serverName.length()));
 	}
 	
 	public void addPlayer(Player p) throws RemoteException{
@@ -78,6 +82,7 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		players.remove(p);
 	}
 	
+	// Renvoie les données du joueur grâce à son ID
 	public Player getPlayerById(int id){
 		for(int i=0; i<players.size();i++){
 			if(players.get(i).getId() == id){
@@ -87,6 +92,7 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		return null;
 	}
 	
+	// Renvoie le numéro du joueur dans le serveur de jeu grâce à son ID
 	public int getPlayerNumById(int id){
 		for(int i=0; i<players.size();i++){
 			if(players.get(i).getId() == id){
@@ -96,9 +102,10 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		return -1;
 	}
 	
+	// Attaque le pêché de cette salle
 	public boolean hitSin() throws RemoteException{
 		this.sin.setHp(this.sin.getHp() - 1);
-		this.chatClient.send("Le pêché " + this.getServerName().substring(1, serverName.length()) + " a perdu 1 point de vie.");
+		this.chatClient.send("Le pêché " + this.getServerName().substring(1, serverName.length()) + " -1 point de vie.");
 		int x = this.sin.getHp();
 		if(x>0) {
 			this.chatClient.send("Il lui reste " + x +" points de vie.");
@@ -110,13 +117,14 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		
 	}
 	
+	// Attaque le joueur qui combat
 	public boolean hitPlayer(int playerNum) throws RemoteException{
 		Player p = players.get(playerNum);
 		players.set(playerNum, new Player(p.getRoom(), p.getId(), p.getHealthPoints() - 1, p.getName(), p.getSins(), p.getMaxHp()));
-		this.chatClient.send("Le joueur " + p.getName() + " a perdu 1 point de vie.");
+		this.chatClient.send(p.getName() + " -1 point de vie.");
 		int x = p.getHealthPoints() - 1;
 		if(x>0) {
-			this.chatClient.send("Il lui reste " + String.valueOf(x) +" points de vie.");
+			this.chatClient.send(p.getName() + " a " + p.getHealthPoints() + " points de vie.");
 			return true;
 		} else {
 			this.chatClient.send("Le joueur " + p.getName() +" est mort.");
@@ -125,8 +133,10 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		
 	}
 	
+	// Gère les combats
 	public int attack(int playerNum) throws RemoteException{
 		double x = Math.random();
+		// Détermine si c'est le joueur ou le monstre qui va perdre de la vie
 		if(x<0.5) {
 			if(!(hitPlayer(playerNum))) {
 				return 1;
@@ -134,19 +144,24 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 		}
 		else {
 			if(!(hitSin())){
-				for(int i=0; i<players.size(); i++) {
-					Player p = players.get(i);
-					int[] j = p.getSins();
-					int y = p.getMaxHp();
-					y = y + 1;
-					j[this.getServerNum()-1] = 1;
-					p.setSins(j);
-					p.setMaxHp(y);
-					p.setHealthPoints(y);
-					players.set(i, p);
+				// Si le pêché est vaincu
+				if(getServerNum()==10) {
+					return 2;
+				}else {
+					for(int i=0; i<players.size(); i++) {
+						Player p = players.get(i);
+						int[] j = p.getSins();
+						int y = p.getMaxHp();
+						y = y + 1;
+						j[this.getServerNum()-1] = 1;
+						p = new Player(p.getRoom(), p.getId(), y, p.getName(), j,y);
+						players.set(i, p);
+						if(IntStream.of(p.getSins()).sum() == 8) {
+							return 2;
+						}					
+					}
 				}
-				this.chatClient.send(Arrays.toString(players.get(playerNum).getSins()));
-				return 2;
+				sin.setHp(5);
 			}
 		}
 		return -1;

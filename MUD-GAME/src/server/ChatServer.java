@@ -28,7 +28,9 @@ public class ChatServer extends UnicastRemoteObject implements ChatServerIF {
 
 	public synchronized void registerChatClient(ChatClientIF chatClient) throws RemoteException {
 		this.chatClients.add(chatClient);
-		broadcastMessage("Le joueur " + chatClient.getName() + " est rentré dans la pièce " + this.getServerName() + ".");
+		if(!(chatClient.getName().equals("Serveur"))) {
+			broadcastMessage("Le joueur " + chatClient.getName() + " est rentré dans la pièce " + this.getServerName() + ".");
+		}
 	}
 	
 	public synchronized void delClientFromChat(ChatClientIF chatClient) throws RemoteException {
