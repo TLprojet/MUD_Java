@@ -216,7 +216,9 @@ public class RunClient {
 					
 					// Affiche la liste des joueurs présents dans la salle
 					ArrayList<Player> players = gameServer.getPlayers();
-					System.out.println("Pêché " + gameServer.getSin().getSinName() + " : " + gameServer.getSin().getHp() + " PV");
+					if(gameServer.getSin()!=null) {
+						System.out.println("Pêché " + gameServer.getSin().getSinName() + " : " + gameServer.getSin().getHp() + " PV");
+					}
 					System.out.println("Liste des joueurs de la salle " + gameServer.getServerNum() + " :");
 					for(int i=0; i<players.size();i++) {
 						System.out.println("\t" + players.get(i).getName());
