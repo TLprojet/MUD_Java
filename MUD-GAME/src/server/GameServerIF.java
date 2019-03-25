@@ -20,7 +20,7 @@ public interface GameServerIF extends Remote {
    public void addPlayer(Player p) throws RemoteException;
    public void delPlayer(int i) throws RemoteException;
    public Player getPlayerById(int id) throws RemoteException;
-   public int attack(int playerNum) throws RemoteException;
+   public void attack(int playerNum) throws RemoteException;
    public int getPlayerNumById(int id) throws RemoteException;
    public ArrayList<Player> getPlayers() throws RemoteException;
    public Sin getSin() throws RemoteException;

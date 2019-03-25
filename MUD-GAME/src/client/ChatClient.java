@@ -39,7 +39,10 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF, Run
 		chatServer.broadcastMessage(name + ": " + message);
 	}
 
-
+	public void senIndiv(String name, String message) throws RemoteException{
+		chatServer.sendIndividualMessage(name, message);
+	}
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub

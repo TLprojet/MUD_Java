@@ -25,7 +25,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	private Grid dj = new Grid();
 	private static ArrayList<Account> accounts;
 	
-	public static void main(String[] args) throws IOException, NotBoundException {
+	public static void main(String[] args) throws IOException, NotBoundException, InterruptedException {
 		// Initiation du serveur global
 		LocateRegistry.createRegistry(1099);
 		GlobalServer globalServ = new GlobalServer(new ArrayList<GameServerIF>(), new ArrayList<ChatServerIF>(), new ArrayList<Account>());
@@ -35,10 +35,37 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		for(int i=0;i<10;i++){
 			String num = Integer.toString(i+1);
 			globalServ.addChatServer(num, new ChatServer(num));
-			if(i==9) {
-				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques", 15)));
-			} else {
-				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Jacques",5)));
+			switch(i) {
+			case 0:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Gourmandise",5)));
+				break;
+			case 1:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Orgueil",5)));
+				break;
+			case 2:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Avarice",5)));
+				break;
+			case 3:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Envie",5)));
+				break;
+			case 4:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Colère",5)));
+				break;
+			case 5:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Luxure",5)));
+				break;
+			case 6:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Paresse",5)));
+				break;
+			case 7:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), null));
+				break;
+			case 8:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), null));
+				break;
+			case 9:
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Boss",20)));
+				break;
 			}
 		}
 		System.out.println("Tous les serveurs ont été correctement lancés.\n");
@@ -137,6 +164,8 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	public void addGameServer(String nom, GameServer serv) throws RemoteException, MalformedURLException{
 		gameServers.add(serv);
 		Naming.rebind(serv.getServerName(), serv);
+		Thread t = new Thread(serv);
+		t.start();
 	   	// System.out.println("Serveur de jeu de la pièce n°" + nom.substring(1) + " lancé");
 	}
 	
@@ -189,7 +218,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	public void die(int accNum, int room) throws RemoteException {
 		Account acc = accounts.get(accNum);
 		Player p = gameServers.get(room-1).getPlayerById(accNum);
-		p = new Player(8, accNum, 10, acc.getName(), new int[9], 10);
+		p = new Player(8, accNum, 10, acc.getName(), new int[10], 10);
 		accounts.set(accNum, new Account(p, 1, acc.getName()));
 		gameServers.get(room-1).delPlayer(gameServers.get(room-1).getPlayerNumById(accNum));
 		gameServers.get(7).addPlayer(p);
@@ -198,7 +227,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 	
 	// Création d'un nouveau compte pour un joueur n'ayant jamais joué
 	public Account addNewAccount(String name) throws RemoteException{
-		Account toAdd = new Account(new Player(8, accounts.size(), 10, name, new int[9], 10), 1, name);
+		Account toAdd = new Account(new Player(8, accounts.size(), 10, name, new int[10], 10), 1, name);
 		accounts.add(toAdd);
 		System.out.println("Le joueur " + toAdd.getName() + " a créé un compte.");
 		gameServers.get(7).addPlayer(toAdd.getPlayer());
@@ -234,25 +263,25 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 		int x = ((pos-1)/3);
 		int y = ((pos-1)%3);
 		
-		if (dir == 2) { //players wants to go to the room in the left
+		if (dir == 2) {
 			if (dj.grille[x][y].getOuest() instanceof Door) {
 				newRoomNum = 3*x+y;
 			}
 		}
 		
-		if (dir == 1) { //players wants to go to the room in the left
+		if (dir == 1) {
 			if (dj.grille[x][y].getNord() instanceof Door) {
 				newRoomNum = 3*(x-1)+y+1;
 			}
 		}
 		
-		if (dir == 4) { //players wants to go to the room in the left
+		if (dir == 4) {
 			if (dj.grille[x][y].getEst() instanceof Door) {
 				newRoomNum = 3*x+y+2;
 			}
 		}
 		
-		if (dir == 3) { //players wants to go to the room in the left
+		if (dir == 3) {
 			if (dj.grille[x][y].getSud() instanceof Door) {
 				newRoomNum = 3*(x+1)+y+1;
 			}

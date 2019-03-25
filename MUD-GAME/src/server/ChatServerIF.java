@@ -9,4 +9,5 @@ public interface ChatServerIF extends Remote{
 	void delClientFromChat(ChatClientIF chatClient) throws RemoteException;
 	void broadcastMessage(String message) throws RemoteException;
 	String getServerName() throws RemoteException;
+	void sendIndividualMessage(String name, String message) throws RemoteException;
 }

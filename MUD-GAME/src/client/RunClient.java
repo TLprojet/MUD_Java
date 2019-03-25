@@ -9,6 +9,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import server.ChatServerIF;
 import server.GlobalServer;
@@ -26,6 +27,8 @@ public class RunClient {
   private static int accNum;
   private static GameServerIF gameServer;
   private static String gameServerURL;
+  private static ChatServerIF chatServer;
+  private static ChatClient chatClient;
     
   public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException, InterruptedException {
     
@@ -70,8 +73,8 @@ public class RunClient {
     
     // Connexion au serveur de chat
 	String chatServerURL = "rmi://localhost:1099/" + gameServer.getServerNum();
-	ChatServerIF chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
-	ChatClient chatClient = new ChatClient(playerName, chatServer);
+	chatServer = (ChatServerIF) Naming.lookup(chatServerURL);
+	chatClient = new ChatClient(playerName, chatServer);
 	Thread t = new Thread(chatClient);
 	t.start();
 	
@@ -81,7 +84,7 @@ public class RunClient {
 	System.out.println("\t- quit pour quitter le jeu");
 	System.out.println("\t- Z,Q,S,D pour se déplacer");
 	System.out.println("\t- A pour attaquer");
-
+	
 	// Attente des commandes joueur
 	while(true) {
 		try {
@@ -104,6 +107,7 @@ public class RunClient {
 				server.logOut(accNum, gameServer.getServerNum());
 				chatServer.delClientFromChat(chatClient);
 				chatServer.broadcastMessage("Le joueur "+ playerName +" s'est déconnecté.\n");
+				System.exit(0);
 				break;
 				
 			case "Z":				
@@ -130,48 +134,67 @@ public class RunClient {
 				move = 4;
 				break;
 				
-			case "A":
-			case "a":
-				// Attaque le pêché si le joueur y est autorisé
-				if(server.canFight(accNum, gameServer.getServerNum())) {
-					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
-					System.out.println(server.arrayToString(gameServer.getPlayerById(accNum).getSins()));
-					if(x == 1){
-						// Si le joueur meurt en combattant
-						server.die(accNum, gameServer.getServerNum());
-						System.out.println("Vous êtes mort.");
-						gameServerURL = "rmi://localhost:1099/18";
-						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
-						System.out.println(server.displayGrid(gameServer.getServerNum()));
-					} else if (x==2) {
-						// Si le joueur a tué tous les pêchés
-						System.out.println("Vous avez vaincu tous les pêchés!");
-						System.out.println("Vous devez maintenant combattre le boss.");
-						System.out.println("C'est un combat à mort. Appuyez sur f pour le combattre.");
-						move = 10;
-					}
-				} else {
-					System.out.println("Il n'y a pas de pêché à combattre ici, ou vous l'avez déjà vaincu.");
+//			case "A":
+//			case "a":
+//				// Attaque le pêché si le joueur y est autorisé
+//				if(server.canFight(accNum, gameServer.getServerNum())) {
+//					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+//					System.out.println(server.arrayToString(gameServer.getPlayerById(accNum).getSins()));
+//					if(x == 1){
+//						// Si le joueur meurt en combattant
+//						server.die(accNum, gameServer.getServerNum());
+//						System.out.println("Vous êtes mort.");
+//						gameServerURL = "rmi://localhost:1099/18";
+//						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+//						System.out.println(server.displayGrid(gameServer.getServerNum()));
+//					} else if (x==2) {
+//						// Si le joueur a tué tous les pêchés
+//						System.out.println("Vous avez vaincu tous les pêchés!");
+//						System.out.println("Vous devez maintenant combattre le boss.");
+//						System.out.println("C'est un combat à mort. Appuyez sur f pour le combattre.");
+//						move = 10;
+//					}
+//				} else {
+//					System.out.println("Il n'y a pas de pêché à combattre ici, ou vous l'avez déjà vaincu.");
+//				}
+//				break;
+			
+			case "R":
+			case "r":
+				if(gameServer.getPlayerById(accNum).getHealthPoints() == 0) {
+					server.die(accNum, gameServer.getServerNum());
+					gameServerURL = "rmi://localhost:1099/18";
+					gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+					System.out.println(server.displayGrid(gameServer.getServerNum()));
 				}
 				break;
-			
-			case"F":
-			case"f":
-				// Attaque le boss si le joueur est dans la bonne salle
-				if(gameServer.getServerNum()==10) {
-					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
-					if(x == 1){
-						server.die(accNum, gameServer.getServerNum());
-						System.out.println("Vous êtes mort.");
-						gameServerURL = "rmi://localhost:1099/18";
-						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
-						System.out.println(server.displayGrid(gameServer.getServerNum()));
-					} else if (x==2) {
-						// Si le joueur fini le jeu
-						System.out.println("FELICITATIONS! Vous avez terminé le jeu.");
-					}
+				
+//			case"F":
+//			case"f":
+//				// Attaque le boss si le joueur est dans la bonne salle
+//				if(gameServer.getServerNum()==10) {
+//					int x = gameServer.attack(gameServer.getPlayerNumById(accNum));
+//					if(x == 1){
+//						server.die(accNum, gameServer.getServerNum());
+//						System.out.println("Vous êtes mort.");
+//						gameServerURL = "rmi://localhost:1099/18";
+//						gameServer = (GameServerIF) Naming.lookup(gameServerURL);
+//						System.out.println(server.displayGrid(gameServer.getServerNum()));
+//					} else if (x==2) {
+//						// Si le joueur fini le jeu
+//						System.out.println("FELICITATIONS! Vous avez terminé le jeu.");
+//					}
+//				} else {
+//					System.out.println("Vous devez d'abord vaincre les autres pêchés pour combattre le boss.");
+//				}
+//				break;
+				
+			case "B":
+			case "b":
+				if(IntStream.of(gameServer.getPlayerById(accNum).getSins()).sum() == 7) {
+					move = 10;
 				} else {
-					System.out.println("Vous devez d'abord vaincre les autres pêchés pour combattre le boss.");
+					System.out.println("Vous devez vaincre tous les pêchés pour rejoindre la salle du boss.");
 				}
 				break;
 			}
@@ -193,7 +216,7 @@ public class RunClient {
 					
 					// Affiche la liste des joueurs présents dans la salle
 					ArrayList<Player> players = gameServer.getPlayers();
-					System.out.println("Points de vie du pêché : " + gameServer.getSin().getHp());
+					System.out.println("Pêché " + gameServer.getSin().getSinName() + " : " + gameServer.getSin().getHp() + " PV");
 					System.out.println("Liste des joueurs de la salle " + gameServer.getServerNum() + " :");
 					for(int i=0; i<players.size();i++) {
 						System.out.println("\t" + players.get(i).getName());

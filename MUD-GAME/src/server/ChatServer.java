@@ -45,5 +45,13 @@ public class ChatServer extends UnicastRemoteObject implements ChatServerIF {
 			chatClients.get(i++).retrieveMessage(message);
 		}
 	}
+	
+	public synchronized void sendIndividualMessage(String name, String message) throws RemoteException{
+		for(int i = 0; i<chatClients.size();i++) {
+			if(chatClients.get(i).getName().equalsIgnoreCase(name)) {
+				chatClients.get(i).retrieveMessage(message);
+			}
+		}
+	}
 
 }

@@ -26,7 +26,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-public class GameServer extends UnicastRemoteObject implements GameServerIF {
+public class GameServer extends UnicastRemoteObject implements GameServerIF, Runnable {
 
  	
 	private static final long serialVersionUID = 1L;
@@ -38,7 +38,7 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	private String chatServerURL;
 	
 	// Constructeur du serveur de jeu
-	protected GameServer(String serverName, ArrayList<Player> players, Sin sin) throws RemoteException, MalformedURLException, NotBoundException {
+	protected GameServer(String serverName, ArrayList<Player> players, Sin sin) throws RemoteException, MalformedURLException, NotBoundException, InterruptedException {
     	super();
     	this.serverName = serverName;
     	this.players = players;
@@ -51,6 +51,28 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
     	Thread t = new Thread(chatClient);
     	t.start();
     	
+	}
+	
+	public void run() {
+    	while(getServerNum()!=8 && getServerNum()!=9) {
+    		if(players.size() > 0) {
+    			for(int i = 0; i<players.size();i++) {
+    				try {
+    					if(players.get(i).getSins()[getServerNum()-1] != 1 && players.get(i).getHealthPoints() != 0) {
+    						attack(i);
+    					}
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+    			}
+    		}
+    		try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
 	}
 
 	public Sin getSin() throws RemoteException {
@@ -113,49 +135,53 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 	// Attaque le pêché de cette salle
 	public boolean hitSin() throws RemoteException{
 		this.sin.setHp(this.sin.getHp() - 1);
-		this.chatClient.send("Le pêché " + this.getServerName().substring(1, serverName.length()) + " : -1 point de vie.");
 		int x = this.sin.getHp();
 		if(x>0) {
-			this.chatClient.send("Il lui reste " + x +" points de vie.");
+			this.chatClient.send("Le pêché " + this.getSin().getSinName() + " a perdu 1 PV, il lui reste " + x + " PV");
 			return true;
 		} else {
-			this.chatClient.send("Il a été vaincu.");
+			this.chatClient.send("Le pêché " + this.getSin().getSinName() + " a perdu 1 PV, il a été vaincu");
 			return false;
 		}
 		
 	}
 	
 	// Attaque le joueur qui combat
-	public boolean hitPlayer(int playerNum) throws RemoteException{
+	public void hitPlayer(int playerNum) throws RemoteException{
 		Player p = players.get(playerNum);
 		int x = p.getHealthPoints() - 1;
 		players.set(playerNum, new Player(p.getRoom(), p.getId(), x, p.getName(), p.getSins(), p.getMaxHp()));
-		this.chatClient.send(p.getName() + " : -1 point de vie.");
 		if(x+1>0) {
-			this.chatClient.send(p.getName() + " a " + p.getHealthPoints() + " points de vie.");
-			return true;
+			this.chatClient.send(p.getName() + " a perdu 1 PV, il lui reste " + p.getHealthPoints() + " PV");
 		} else {
-			this.chatClient.send("Le joueur " + p.getName() +" est mort.");
-			return false;
+			this.chatClient.send("Le joueur " + p.getName() +" a perdu 1 PV, il est mort.");
+			this.chatClient.senIndiv(p.getName(), "\n Appuyez sur R pour recommencer le jeu.");
 		}
 		
 	}
 	
 	// Gère les combats
-	public int attack(int playerNum) throws RemoteException{
+	public void attack(int playerNum) throws RemoteException{
 		double x = Math.random();
 		// Détermine si c'est le joueur ou le monstre qui va perdre de la vie
 		if(x<0.5) {
-			if(!(hitPlayer(playerNum))) {
-				return 1;
-			}
+			hitPlayer(playerNum);
 		}
 		else {
 			if(!(hitSin())){
 				// Si le pêché est vaincu
 				if(getServerNum()==10) {
-					return 2;
-				}else {
+					// Si c'était le boss
+					Player p = players.get(playerNum);
+					int[] j = p.getSins();
+					j[9] = 1;
+					int y = p.getMaxHp();
+					y = y + 1;
+					p = new Player(p.getRoom(), p.getId(), y, p.getName(), j,y);
+					players.set(playerNum, p);
+					this.chatClient.senIndiv(p.getName(), "\n Bravo! Vous avez terminé notre jeu si difficile, vous faites partie des grands de ce monde.");
+				} else {
+					// On assigne la victoire à tous les joueurs qui ont combattu le pêché
 					for(int i=0; i<players.size(); i++) {
 						Player p = players.get(i);
 						int[] j = p.getSins();
@@ -164,15 +190,17 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF {
 						j[this.getServerNum()-1] = 1;
 						p = new Player(p.getRoom(), p.getId(), y, p.getName(), j,y);
 						players.set(i, p);
+						
 						if(IntStream.of(p.getSins()).sum() == 7) {
-							return 2;
+							// Si un joueur a vaincu tous les pêchés
+							this.chatClient.senIndiv(p.getName(), "\n Vous avez vaincu tous les pêchés!\n Appuyez sur B pour rejoindre la salle du boss.");
 						}					
 					}
 				}
+				// On redonne des points de vie au pêché
 				sin.setHp(5);
 			}
 		}
-		return -1;
 		
 	}
 	
