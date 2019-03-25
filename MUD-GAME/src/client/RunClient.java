@@ -135,7 +135,7 @@ public class RunClient {
 			
 			case "R":
 			case "r":
-				if(gameServer.getPlayerById(accNum).getHealthPoints() == 0) {
+				if(gameServer.getPlayerById(accNum).getHealthPoints() < 0) {
 					server.die(accNum, gameServer.getServerNum());
 					gameServerURL = "rmi://localhost:1099/18";
 					gameServer = (GameServerIF) Naming.lookup(gameServerURL);

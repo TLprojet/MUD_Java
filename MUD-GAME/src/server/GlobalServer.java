@@ -64,7 +64,7 @@ public class GlobalServer extends UnicastRemoteObject implements GlobalServerIF 
 				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), null));
 				break;
 			case 9:
-				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Boss",12)));
+				globalServ.addGameServer("1" + num, new GameServer("1" + num, new ArrayList<Player>(), new Sin("Boss",20)));
 				break;
 			}
 		}

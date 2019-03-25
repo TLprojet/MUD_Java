@@ -58,7 +58,7 @@ public class GameServer extends UnicastRemoteObject implements GameServerIF, Run
     		if(players.size() > 0) {
     			for(int i = 0; i<players.size();i++) {
     				try {
-    					if(players.get(i).getSins()[getServerNum()-1] != 1 && players.get(i).getHealthPoints() != 0) {
+    					if(players.get(i).getSins()[getServerNum()-1] != 1 && players.get(i).getHealthPoints() > -1) {
     						attack(i);
     					}
 					} catch (RemoteException e) {
